@@ -235,7 +235,7 @@ exports.list_blog_recursively = (blog_data, settings) => {
         if(settings.featured_image && 
             posts_data[i_data]["enclosure"] && 
             posts_data[i_data]["enclosure"] != "") {
-                
+
             list_content += `
                 <img src="${posts_data[i_data]["enclosure"]}" />`
         }
@@ -247,7 +247,7 @@ exports.list_blog_recursively = (blog_data, settings) => {
                         ${posts_data[i_data]["date_object"].toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                     </p>
                     <p class="list_blog_title">${posts_data[i_data]["title"]}</p>
-                    <div class="list_blog_description">${functions.remove_html_tags(posts_data[i_data]["description"])}</div>
+                    <div class="list_blog_description">${functions.remove_html_tags(posts_data[i_data]["content"])}</div>
                 </div>
             </a>
         </li>`
