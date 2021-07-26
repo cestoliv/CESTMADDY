@@ -1,6 +1,6 @@
 # Roadmap
 
-Current version : **v0.1.1**
+Current version : **v0.1.2**
 
 - **v0.1.2** :
     + [X] ~~*Make the generation 2x faster (do not recompile each file)*~~ [2021-05-13]
@@ -12,6 +12,7 @@ Current version : **v0.1.1**
     + [ ] Log cleanup
     + [ ] Display configuration errors in the logs
     + [ ] Use multiple threads during generation
+    + [ ] `enclosure` and `limit` settings for `LIST_BLOG_RECUR` and `LIST_PODCAST_RECUR`
 
 - **v0.1.4** :
     + [ ] Command to import/export (backup) the site, including comments if they are running under docker with the site
