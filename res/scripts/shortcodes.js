@@ -126,6 +126,13 @@ exports.replace_shortcode = (str, source_path, additional_data) => {
                                 list_data.limit > 0) {
                                     list_settings.limit = list_data.limit
                             }
+
+                            if(list_data.featured_image) {
+                                list_settings.featured_image = true
+                            }
+                            else {
+                                list_settings.featured_image = false
+                            }
                         }
 
                         let blog_data = {}
@@ -223,13 +230,25 @@ exports.list_blog_recursively = (blog_data, settings) => {
 
     for (i_data in posts_data) {
         list_content += `<li>
-            <a href="${posts_data[i_data]["link"]}">
-                <p class="list_blog_date">${posts_data[i_data]["author"]["name"]},
-                    <strong>[RELATIVE_DATE=${posts_data[i_data]["date_object"].toISOString()}]</strong>,
-                    ${posts_data[i_data]["date_object"].toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
-                </p>
-                <p class="list_blog_title">${posts_data[i_data]["title"]}</p>
-                <div class="list_blog_description">${functions.remove_html_tags(posts_data[i_data]["description"])}</div>
+            <a href="${posts_data[i_data]["link"]}">`
+
+        if(settings.featured_image && 
+            posts_data[i_data]["enclosure"] && 
+            posts_data[i_data]["enclosure"] != "") {
+                
+            list_content += `
+                <img src="${posts_data[i_data]["enclosure"]}" />`
+        }
+
+        list_content += `
+                <div class="list_blog_content">
+                    <p class="list_blog_date">${posts_data[i_data]["author"]["name"]},
+                        <strong>[RELATIVE_DATE=${posts_data[i_data]["date_object"].toISOString()}]</strong>,
+                        ${posts_data[i_data]["date_object"].toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                    </p>
+                    <p class="list_blog_title">${posts_data[i_data]["title"]}</p>
+                    <div class="list_blog_description">${functions.remove_html_tags(posts_data[i_data]["description"])}</div>
+                </div>
             </a>
         </li>`
     }

@@ -51,14 +51,14 @@ footer {
     margin-bottom: 2rem;
 }
 
-@media all and (max-width: 1000px) {
+@media all and (max-width: 1200px) {
     #content {
         margin-left: 15%;
         margin-right: 15%;
     }
 }
 
-@media all and (max-width: 650px) {
+@media all and (max-width: 900px) {
     #content {
         margin-left: 3rem;
         margin-right: 3rem;

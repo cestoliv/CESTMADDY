@@ -12,7 +12,7 @@ Current version : **v0.1.2**
     + [ ] Log cleanup
     + [ ] Display configuration errors in the logs
     + [ ] Use multiple threads during generation
-    + [ ] `enclosure` and `limit` settings for `LIST_BLOG_RECUR` and `LIST_PODCAST_RECUR`
+    + [X] `featured_image` and `limit` settings for `LIST_BLOG_RECUR` and `LIST_PODCAST_RECUR`
 
 - **v0.1.4** :
     + [ ] Command to import/export (backup) the site, including comments if they are running under docker with the site
