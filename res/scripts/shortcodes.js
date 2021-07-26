@@ -110,12 +110,21 @@ exports.replace_shortcode = (str, source_path, additional_data) => {
                     case "[LIST_BLOG_RECUR]":
                         let blog_source_path = source_path
 
+                        list_settings = {}
+
                         if (shortcode_data.replace[short_ctr].value) {
                             // is there is some settings
                             let list_data = JSON.parse(shortcode_data.replace[short_ctr].value)
 
-                            if (list_data.path) {
+                            if(list_data.path) {
                                 blog_source_path = path_resolve(`source/${list_data.path}/index.md`)
+                            }
+
+                            // add settings
+                            if(list_data.limit &&
+                                Number.isInteger(list_data.limit) &&
+                                list_data.limit > 0) {
+                                    list_settings.limit = list_data.limit
                             }
                         }
 
@@ -130,19 +139,28 @@ exports.replace_shortcode = (str, source_path, additional_data) => {
 
                         str = str.replace(
                             new RegExp(`\\w*(?<!\\$)${key}`),
-                            this.list_blog_recursively(blog_data)
+                            this.list_blog_recursively(blog_data, list_settings)
                         )
                         break
 
                     case "[LIST_PODCAST_RECUR]":
                         let podcast_source_path = source_path
 
+                        list_settings = {}
+
                         if (shortcode_data.replace[short_ctr].value) {
                             // is there is some settings
                             let list_data = JSON.parse(shortcode_data.replace[short_ctr].value)
 
-                            if (list_data.path) {
+                            if(list_data.path) {
                                 podcast_source_path = path_resolve(`source/${list_data.path}/index.md`)
+                            }
+
+                            // add settings
+                            if(list_data.limit &&
+                                Number.isInteger(list_data.limit) &&
+                                list_data.limit > 0) {
+                                    list_settings.limit = list_data.limit
                             }
                         }
 
@@ -157,7 +175,7 @@ exports.replace_shortcode = (str, source_path, additional_data) => {
 
                         str = str.replace(
                             new RegExp(`\\w*(?<!\\$)${key}`),
-                            this.list_podcast_recursively(podcast_data)
+                            this.list_podcast_recursively(podcast_data, list_settings)
                         )
                         break
 
@@ -188,7 +206,7 @@ exports.replace_shortcode = (str, source_path, additional_data) => {
     CONTENT GENERATION
 */
 
-exports.list_blog_recursively = (blog_data) => {
+exports.list_blog_recursively = (blog_data, settings) => {
     let list_content = `<ul class="list_blog">`
 
     let posts_data = blog_data["posts_data"]
@@ -197,6 +215,11 @@ exports.list_blog_recursively = (blog_data) => {
     posts_data = posts_data.sort((a, b) => {
         return a.date_object < b.date_object ? 1 : -1
     })
+
+    // apply limit
+    if(settings.limit) {
+        posts_data = posts_data.slice(0, settings.limit)
+    }
 
     for (i_data in posts_data) {
         list_content += `<li>
@@ -216,7 +239,7 @@ exports.list_blog_recursively = (blog_data) => {
     return list_content
 }
 
-exports.list_podcast_recursively = (podcast_data) => {
+exports.list_podcast_recursively = (podcast_data, settings) => {
     let list_content = `<ul class="list_podcast">`
 
     let podcasts_data = podcast_data["podcasts_data"]
@@ -225,6 +248,11 @@ exports.list_podcast_recursively = (podcast_data) => {
     podcasts_data = podcasts_data.sort((a, b) => {
         return a.date_object < b.date_object ? 1 : -1
     })
+
+    // apply limit
+    if(settings.limit) {
+        podcasts_data = podcasts_data.slice(0, settings.limit)
+    }
 
     for (i_data in podcasts_data) {
         list_content += `<li>
