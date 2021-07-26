@@ -63,9 +63,6 @@ exports.remove_html_tags = (html) => {
     /*
         Remove the html tags of a string and return it with regex
     */
-    //let dom = new JSDOM(`<!DOCTYPE html><head></head><body>${html}</body>`)
-    //console.log(html)
-    //return dom.window.document.querySelector("body").textContent
     let $ = cheerio.load(html);
     return $.text().trim();
 }
