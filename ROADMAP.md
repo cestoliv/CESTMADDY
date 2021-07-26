@@ -13,6 +13,7 @@ Current version : **v0.1.2**
     + [ ] Display configuration errors in the logs
     + [ ] Use multiple threads during generation
     + [X] `featured_image` and `limit` settings for `LIST_BLOG_RECUR` and `LIST_PODCAST_RECUR`
+    + [ ] Standardize names (enclosure, image -> featured_image)
 
 - **v0.1.4** :
     + [ ] Command to import/export (backup) the site, including comments if they are running under docker with the site

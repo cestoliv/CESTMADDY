@@ -169,6 +169,13 @@ exports.replace_shortcode = (str, source_path, additional_data) => {
                                 list_data.limit > 0) {
                                     list_settings.limit = list_data.limit
                             }
+
+                            if(list_data.featured_image) {
+                                list_settings.featured_image = true
+                            }
+                            else {
+                                list_settings.featured_image = false
+                            }
                         }
 
                         let podcast_data = {}
@@ -233,7 +240,6 @@ exports.list_blog_recursively = (blog_data, settings) => {
             <a href="${posts_data[i_data]["link"]}">`
 
         if(settings.featured_image && 
-            posts_data[i_data]["enclosure"] && 
             posts_data[i_data]["enclosure"] != "") {
 
             list_content += `
@@ -275,16 +281,27 @@ exports.list_podcast_recursively = (podcast_data, settings) => {
 
     for (i_data in podcasts_data) {
         list_content += `<li>
-            <a href="${podcasts_data[i_data]["link"]}">
-                <p class="list_podcast_date">${podcasts_data[i_data]["author"]["name"]},
-                    <strong>[RELATIVE_DATE=${podcasts_data[i_data]["date_object"].toISOString()}]</strong>,
-                    ${podcasts_data[i_data]["date_object"].toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
-                </p>
-                <div class="list_podcast_tidur_box">
-                    <p class="list_podcast_duration">${podcasts.remove_0_before_duration(podcasts_data[i_data]["duration"])}</p>
-                    <p class="list_podcast_title">${podcasts_data[i_data]["title"]}</p>
+            <a href="${podcasts_data[i_data]["link"]}">`
+
+            if(settings.featured_image && 
+                podcasts_data[i_data]["image"] != "") {
+    
+                list_content += `
+                    <img src="${podcasts_data[i_data]["image"]}" />`
+            }
+        
+        list_content += `
+                <div class="list_podcast_content">
+                    <p class="list_podcast_date">${podcasts_data[i_data]["author"]["name"]},
+                        <strong>[RELATIVE_DATE=${podcasts_data[i_data]["date_object"].toISOString()}]</strong>,
+                        ${podcasts_data[i_data]["date_object"].toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                    </p>
+                    <div class="list_podcast_tidur_box">
+                        <p class="list_podcast_duration">${podcasts.remove_0_before_duration(podcasts_data[i_data]["duration"])}</p>
+                        <p class="list_podcast_title">${podcasts_data[i_data]["title"]}</p>
+                    </div>
+                    <div class="list_podcast_description">${functions.remove_html_tags(podcasts_data[i_data]["description"])}</div>
                 </div>
-                <div class="list_podcast_description">${functions.remove_html_tags(podcasts_data[i_data]["description"])}</div>
             </a>
         </li>`
     }
