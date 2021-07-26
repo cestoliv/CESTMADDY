@@ -1,3 +1,6 @@
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 exports.user_date_to_date_object = (u_date = "") => {
     /*
         Convert a date string ("YYYY-MM-DDTHH:MM:SS")
@@ -59,7 +62,6 @@ exports.remove_html_tags = (html) => {
     /*
         Remove the html tags of a string and return it with regex
     */
-    text = html.toString()
-    text = text.replace( /(<([^>]+)>)/ig, '')
-    return text
+    let dom = new JSDOM(`<!DOCTYPE html>${html.toString()}`)
+    return dom.window.document.querySelector("body").textContent
 }

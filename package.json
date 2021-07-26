@@ -30,6 +30,7 @@
     "grunt-run": "^0.8.1",
     "highlight.js": "^10.5.0",
     "imagemagick": "*",
+    "jsdom": "^16.6.0",
     "marked": "^2.0.0",
     "mime": "^2.4.7",
     "mp3-duration": "^1.1.0",
