@@ -53,12 +53,11 @@ exports.compile_html = (source_path, additional_data={}) => {
     let page_shortcodes = shortcodes.get_shortcodes(source_file)
 
     //compile page
-    source_file = shortcodes.replace_shortcode(
-        source_file,
+    let source_html = shortcodes.replace_shortcode(
+        markdown_compiler.compile(source_file),
         source_path,
         additional_data
     )
-    let source_html = markdown_compiler.compile(source_file)
     
     // site data
     let site = {

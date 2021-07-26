@@ -71,7 +71,7 @@ exports.get_shortcodes = (str) => {
                 }
                 else {
                     if (found[1].startsWith("=")) {
-                        results.values[`[${shortcodes_arr[short]}]`] = found[1].substr(1)
+                        results.values[`[${shortcodes_arr[short]}]`] = found[1].substr(1).replace(/&quot;/g, `"`)
                     }
 
                     results.replace.push({

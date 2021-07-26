@@ -268,11 +268,9 @@ exports.get_post_data = (blog_config, md_post_path, return_content=false) => {
     }
 
     if(return_content) {
-        post_data.content = markdown_compiler.compile(
-            shortcodes.replace_shortcode(
-                post_md,
-                md_post_path
-            )
+        post_data.content = shortcodes.replace_shortcode(
+            markdown_compiler.compile(post_md),
+            md_post_path
         )
     }
 

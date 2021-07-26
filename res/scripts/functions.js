@@ -1,5 +1,6 @@
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
+const cheerio = require('cheerio');
 
 exports.user_date_to_date_object = (u_date = "") => {
     /*
@@ -62,6 +63,9 @@ exports.remove_html_tags = (html) => {
     /*
         Remove the html tags of a string and return it with regex
     */
-    let dom = new JSDOM(`<!DOCTYPE html>${html.toString()}`)
-    return dom.window.document.querySelector("body").textContent
+    //let dom = new JSDOM(`<!DOCTYPE html><head></head><body>${html}</body>`)
+    //console.log(html)
+    //return dom.window.document.querySelector("body").textContent
+    let $ = cheerio.load(html);
+    return $.text().trim();
 }
