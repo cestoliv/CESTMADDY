@@ -1,5 +1,3 @@
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
 const cheerio = require('cheerio');
 
 exports.user_date_to_date_object = (u_date = "") => {
