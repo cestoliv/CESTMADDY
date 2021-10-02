@@ -2,7 +2,10 @@ docker-build:
   # Use the official docker image.
   image: docker:latest
   stage: build
+  services:
+    - docker:dind
   before_script:
+    - docker info
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.chevro.fr
   # Default branch leaves tag empty (= latest tag)
   # All other branches are tagged with the escaped branch name (commit ref slug)
