@@ -18,6 +18,7 @@ Current version : **v0.1.2**
     + [X] Better HTML to text function (with cheerio)
     + [X] No more need for the domain name in the config (less problem for the change dev=>prod and allows several domain names, ex: for TOR)
     + [ ] Harmonization of configuration files (e.g.: the port exists in the config.yml and the .env)
+    + [X] Fix : remove ending /post and /podcast
 
 - **v0.1.4** :
     + [ ] Command to import/export (backup) the site, including comments if they are running under docker with the site
