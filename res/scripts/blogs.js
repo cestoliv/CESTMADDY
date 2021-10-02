@@ -205,10 +205,9 @@ exports.get_post_data = (blog_config, md_post_path, return_content=false) => {
     }
 
     // LINK
-    let blog_dir_without_source = compiler.remove_source_from_path(blog_config["dir"])
-    let without_source_and_ext = compiler.remove_source_and_md_extension_from_path(md_post_path)
-    without_source_and_ext = without_source_and_ext.substr(blog_dir_without_source.length)
-    let post_link = `[DOMAIN]${blog_config["path"]}${without_source_and_ext}`
+	let post_path = compiler.remove_source_and_md_extension_from_path(md_post_path)
+    post_path = post_path.replace(/\/post$/, "") // remove trailing /post
+	let post_link = `[DOMAIN]${post_path}`
 
     if(!config.get("boolean", ["server", "hide_html_extension"])) {
         post_link += ".html"

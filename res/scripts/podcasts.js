@@ -257,7 +257,10 @@ exports.get_podcast_data = (podcast_config, md_podcast_path) => {
     }
 
     // LINK
-    let podcast_link = `[DOMAIN]${podcast_config["path"]}${without_source_and_ext}`
+	let podcast_path = compiler.remove_source_and_md_extension_from_path(md_podcast_path)
+    podcast_path = podcast_path.replace(/\/podcast$/, "") // remove trailing /podcast
+
+    let podcast_link = `[DOMAIN]${podcast_path}`
 
     if(!config.get("boolean", ["server", "hide_html_extension"])) {
         podcast_link += ".html"
