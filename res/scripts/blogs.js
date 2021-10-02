@@ -88,7 +88,7 @@ exports.make_rss_feed = (blog_data) => {
     <channel>
         <title>${blog_config["title"]}</title>
         <description>${blog_config["description"]}</description>
-        <link>${config.get("string", ["server", "domain"])}${blog_config["path"]}</link>
+        <link>[DOMAIN]${blog_config["path"]}</link>
         <category>${blog_config["category"]}</category>
         <language>${blog_config["language"]}</language>
         ${itemsFeed}
@@ -208,7 +208,7 @@ exports.get_post_data = (blog_config, md_post_path, return_content=false) => {
     let blog_dir_without_source = compiler.remove_source_from_path(blog_config["dir"])
     let without_source_and_ext = compiler.remove_source_and_md_extension_from_path(md_post_path)
     without_source_and_ext = without_source_and_ext.substr(blog_dir_without_source.length)
-    let post_link = `${config.get("string", ["server", "domain"])}${blog_config["path"]}${without_source_and_ext}`
+    let post_link = `[DOMAIN]${blog_config["path"]}${without_source_and_ext}`
 
     if(!config.get("boolean", ["server", "hide_html_extension"])) {
         post_link += ".html"
@@ -219,14 +219,14 @@ exports.get_post_data = (blog_config, md_post_path, return_content=false) => {
 
     // ENCLOSURE
     if(post_shortcodes.values.hasOwnProperty("[ENCLOSURE]")) {
-        post_data.enclosure = config.get("string", ["server", "domain"]) + post_shortcodes.values["[ENCLOSURE]"]
+        post_data.enclosure = `[DOMAIN]${post_shortcodes.values["[ENCLOSURE]"]}`
     }
     else {
         let first_image = /!\[.+?\]\((.+?)\)/g.exec(post_md)
         if(first_image)
             first_image = first_image[1]
         if(first_image)
-            post_data.enclosure = config.get("string", ["server", "domain"]) + first_image
+            post_data.enclosure = `[DOMAIN]${first_image}`
     }
 
     // DATE

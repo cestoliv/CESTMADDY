@@ -257,7 +257,7 @@ exports.get_podcast_data = (podcast_config, md_podcast_path) => {
     }
 
     // LINK
-    let podcast_link = `${config.get("string", ["server", "domain"])}${podcast_config["path"]}${without_source_and_ext}`
+    let podcast_link = `[DOMAIN]${podcast_config["path"]}${without_source_and_ext}`
 
     if(!config.get("boolean", ["server", "hide_html_extension"])) {
         podcast_link += ".html"
@@ -283,7 +283,7 @@ exports.get_podcast_data = (podcast_config, md_podcast_path) => {
             let get_audio_duration = sp(mp3Duration)
             let audio_duration = get_audio_duration(audio_path)
 
-            podcast_data.enclosure.url = `${config.get("string", ["server", "domain"])}${new_audio_path}`
+            podcast_data.enclosure.url = `[DOMAIN]${new_audio_path}`
             podcast_data.enclosure.length = audio_stats.size
             podcast_data.enclosure.type = mime.getType(path.extname(audio_path))
 
@@ -307,7 +307,7 @@ exports.get_podcast_data = (podcast_config, md_podcast_path) => {
             
             compiler.copy_file(image_path, copy_dest)
 
-            podcast_data.image= `${config.get("string", ["server", "domain"])}${new_image_path}`
+            podcast_data.image= `[DOMAIN]${new_image_path}`
         }
         catch (err) {
             console.log(`\n${compiler.remove_before_source_from_path(image_path).bold}`)
@@ -357,7 +357,7 @@ exports.get_podcast_data = (podcast_config, md_podcast_path) => {
     if(podcast_shortcodes.values.hasOwnProperty("[PODCAST_LINKS]")) {
         podcast_data.links = Object.assign(
             {
-                rss: `${config.get("string", ["server", "domain"])}${podcast_config["path"]}/feed.xml`
+                rss: `[DOMAIN]${podcast_config["path"]}/feed.xml`
             },
             JSON.parse(podcast_shortcodes.values["[PODCAST_LINKS]"])
         )
@@ -457,7 +457,7 @@ exports.get_podcast_config = (source_path) => {
             podcast_config["local_path"] = path.join("res", "content", "generated", podcast_config["path"])
 
             // PODCAST LINK
-            podcast_config["link"] = `${config.get("string", ["server", "domain"])}${podcast_config["path"]}`
+            podcast_config["link"] = `[DOMAIN]${podcast_config["path"]}`
         
             // PODCAST IMAGE
             if(podcast_config["image"] != "") {
@@ -468,7 +468,7 @@ exports.get_podcast_config = (source_path) => {
 
                     compiler.copy_file(podcast_config["image_url"], new_image_path, true)
 
-                    podcast_config["image_url"] = `${config.get("string", ["server", "domain"])}${podcast_config["path"]}/${path.basename(podcast_config["image_url"])}`
+                    podcast_config["image_url"] = `[DOMAIN]${podcast_config["path"]}/${path.basename(podcast_config["image_url"])}`
                 }
                 catch (err) {
                     console.log(`\n${compiler.remove_before_source_from_path(podcast_config["image_url"]).bold}`)

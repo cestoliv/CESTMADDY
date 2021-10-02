@@ -17,14 +17,20 @@ var replaceInHtml = interceptor((req, res) => {
     return {
         // Only HTML responses will be intercepted
         isInterceptable: () => {
-            return /text\/html/.test(res.get('Content-Type'))
+			if (/text\/html/.test(res.get('Content-Type')) ||
+				/application\/xml/.test(res.get('Content-Type')) )
+				return true
+            return false
         },
         intercept: (html, send) => {
-            html = html.replace(/\w*(?<!\$)\[RELATIVE_DATE([\s\S]*?)\]/g, (_, iso_date) => {
+			// RELATIVE DATE
+			html = html.replace(/\w*(?<!\$)\[RELATIVE_DATE([\s\S]*?)\]/g, (_, iso_date) => {
                 iso_date = iso_date.substr(1) // remove the =
                 return functions.date_to_relative_date(functions.user_date_to_date_object(iso_date))
             })
-            send(html)
+			// DOMAIN
+			html = html.replace(/\w*(?<!\$)\[DOMAIN\]/g, `${req.protocol}://${req.headers.host}`)
+			send(html)
         }
     }
 })

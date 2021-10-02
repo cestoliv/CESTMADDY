@@ -14,12 +14,12 @@ Current version : **v0.1.2**
     + [ ] Use multiple threads during generation
     + [X] `featured_image` and `limit` settings for `LIST_BLOG_RECUR` and `LIST_PODCAST_RECUR`
     + [ ] Standardize names (enclosure, image -> featured_image)
-    + [X] Better HTML to text function (with JSDom)
+    + [X] Better HTML to text function (with cheerio)
+    + [X] No more need for the domain name in the config (less problem for the change dev=>prod and allows several domain names, ex: for TOR)
 
 - **v0.1.4** :
     + [ ] Command to import/export (backup) the site, including comments if they are running under docker with the site
     + [ ] Added OpenGraph support
-    + [ ] The domain is generated in real time (like the RELATIVE_DATE) to allow different domains, TOR, etc.
 
 - **v0.2.0 : Shortcodes update** :
     + [ ] `LIST_BLOG_RECUR` and `LIST_PODCAST_RECUR` replaced by `LIST` with parameters (recur, type, enclosure) and page list added
