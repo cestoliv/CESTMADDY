@@ -1,7 +1,7 @@
 node-check:
   # Use the official docker image.
   image: node:latest
-  stage: check
+  stage: build
   script:
     - apt install imagemagick
     - npm install -g grunt
