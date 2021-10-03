@@ -1,7 +1,7 @@
-build:
+node-check:
   # Use the official docker image.
   image: node:latest
-  stage: build
+  stage: check
   script:
     - apt install imagemagick
     - npm install -g grunt
@@ -10,7 +10,7 @@ build:
       cp res/deployment/default/config.yml config.yml
       cp -r res/deployment/default/source source/
       cp -r res/deployment/default/custom custom/
-    - npm start
+    - timeout 2m npm start
 
 docker-build:
   image: docker:latest
