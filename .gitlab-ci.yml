@@ -1,14 +1,35 @@
-docker-build:
+build:
   # Use the official docker image.
+  image: node:latest
+  stage: build
+  script:
+    - apt install imagemagick
+    - npm install -g grunt
+    - npm install
+    - |
+      cp res/deployment/default/config.yml config.yml
+      cp -r res/deployment/default/source source/
+      cp -r res/deployment/default/custom custom/
+    - npm start
+
+docker-build:
   image: docker:latest
   stage: build
   services:
     - docker:dind
   before_script:
     - docker info
+  script:
+    - docker build --pull .
+
+docker-publish:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  before_script:
+    - docker info
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  # Default branch leaves tag empty (= latest tag)
-  # All other branches are tagged with the escaped branch name (commit ref slug)
   script:
     - |
       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
@@ -20,8 +41,3 @@ docker-build:
       fi
     - docker build --pull -t "$CI_REGISTRY/$CI_PROJECT_PATH${tag}" .
     - docker push "$CI_REGISTRY/$CI_PROJECT_PATH${tag}"
-  # Run this job in a branch where a Dockerfile exists
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - Dockerfile
