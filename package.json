@@ -1,14 +1,23 @@
 {
-  "scripts": {
-    "start": "node dist/server.js",
-    "start-dev": "nodemon dist/server.js"
-  },
-  "dependencies": {
-    "@types/express": "^4.17.13",
-    "@types/node": "^17.0.15",
-    "colors": "^1.4.0",
-    "express": "^4.17.2",
-    "express-interceptor": "^1.2.0",
-    "moment": "^2.29.1"
-  }
+	"name": "cestmaddy",
+	"version": "2.0.0",
+	"description": "A light and powerful CMS, for developers.",
+	"main": "dist/server.js",
+	"repository": "https://git.chevro.fr/cestoliv/cestmaddy",
+	"author": "Olivier Cartier <me@cestoliv.com>",
+	"license": "MIT",
+	"scripts": {
+		"start": "node dist/server.js",
+		"start-dev": "nodemon dist/server.js"
+	},
+	"dependencies": {
+		"@types/express": "^4.17.13",
+		"@types/js-yaml": "^4.0.5",
+		"@types/node": "^17.0.15",
+		"colors": "^1.4.0",
+		"express": "^4.17.2",
+		"express-interceptor": "^1.2.0",
+		"js-yaml": "^4.1.0",
+		"moment": "^2.29.1"
+	}
 }
