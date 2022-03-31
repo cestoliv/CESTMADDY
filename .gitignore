@@ -2,6 +2,5 @@ cestici/
 dist/
 
 node_modules/
-package-lock.json
 TODO.md
 v1/
