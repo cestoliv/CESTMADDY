@@ -13,7 +13,18 @@ export interface IPage {
 
 export interface IPost {
 	sourcePath: string,
-	generatedPath: string
+	generatedPath: string,
+	title: string,
+	date: string,
+	author: {
+		name: string,
+		email: string
+	},
+	description: string,
+	enclosure: {
+		generatedPath: string,
+		webPath: string
+	}
 }
 
 export interface IBlog {
@@ -44,5 +55,9 @@ export interface ISources {
 	blogs: Array<IBlog>,
 	podcasts: Array<IPodcast>
 }
-
 //#endregion
+
+export enum EConf {
+	Required,
+	Optional
+}

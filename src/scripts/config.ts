@@ -1,11 +1,12 @@
 import { load } from 'js-yaml'
 import fs from 'fs'
-import 'colors'
+import '@colors/colors'
+import { EConf } from './interfaces'
 
 const file = fs.readFileSync('./cestici/config.yml', 'utf8')
 const configYaml = load(file)
 
-export const conf = (path: string, type: string, required: boolean = true) => {
+export const conf = (path: string, type: string, required: EConf) => {
 	const	paths:string[] = path.split('.')
 	var		elem:any
 	var		elemType:string
@@ -16,9 +17,9 @@ export const conf = (path: string, type: string, required: boolean = true) => {
 			elem = elem[paths[elemI]]
 		else
 		{
-			if (!required)
+			if (required == EConf.Optional)
 				return null
-			console.log(`Config : ${paths.slice(0, elemI + 1).join('.')} is not defined`.red)
+			console.error(`Config : ${paths.slice(0, elemI + 1).join('.')} is not defined`.red)
 			return process.exit(1)
 		}
 	}
@@ -29,7 +30,7 @@ export const conf = (path: string, type: string, required: boolean = true) => {
 		elemType = "array"
 	if (elemType != type)
 	{
-		console.log(`Config : Wrong type for ${path}, it is of type ${elemType} and should be of type ${type}`.red)
+		console.error(`Config : Wrong type for ${path}, it is of type ${elemType} and should be of type ${type}`.red)
 		return process.exit(1)
 	}
 	else
