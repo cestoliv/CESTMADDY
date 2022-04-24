@@ -15,7 +15,7 @@ export function getPodcastsStruct(): Array<IPodcast> {
 		let bDir = conf(`content.podcasts.${bName}.dir`, "string", EConf.Required)
 		struct.push({
 			name: bName,
-			path: `./${path.join("./cestici/source", bDir)}`,
+			path: path.join("./cestici/source", bDir),
 			episodes: new Array()
 		})
 	})
@@ -25,6 +25,7 @@ export function getPodcastsStruct(): Array<IPodcast> {
 export function getEpisodeMeta(sourcePath: string, podcast: IPodcast): Promise<void> {
 	return new Promise((resolve, _reject) => {
 		let episode: IEpisode = {
+			type: ESourceType.Episode,
 			sourcePath,
 			generatedPath: getGeneratedPath(sourcePath, ESourceType.Post)
 		}

@@ -18,7 +18,7 @@ export function getBlogsStruct(): Array<IBlog> {
 		let bDir = conf(`content.blogs.${bName}.dir`, "string", EConf.Required)
 		struct.push({
 			name: bName,
-			path: `./${path.join("./cestici/source", bDir)}`,
+			path: path.join("./cestici/source", bDir),
 			posts: new Array()
 		})
 	})
@@ -29,10 +29,15 @@ export function getPostMeta(sourcePath: string, blog: IBlog): Promise<void> {
 	return new Promise((resolve, reject) => {
 		fs.promises.readFile(sourcePath, 'utf-8').then((data) => {
 			let post: IPost = {
+				type: ESourceType.Post,
 				sourcePath,
 				generatedPath: getGeneratedPath(sourcePath, ESourceType.Post),
 				title: "Unnamed",
-				date: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+				date: {
+					object: new Date(),
+					localeString: new Date().toLocaleString(conf(`content.language`, "string", EConf.Required)),
+					relativeString: `[RELATIVE_DATE=${new Date().toISOString()}]`
+				},
 				author: {
 					name: conf(`content.blogs.${blog.name}.main_author`, "string", EConf.Required),
 					email: ""
@@ -67,8 +72,11 @@ export function getPostMeta(sourcePath: string, blog: IBlog): Promise<void> {
 					console.warn(`Retrieving metadata : You didn't provide any title for the post ${sourcePath.bold}`.yellow)
 				// DATE
 				if (fileMeta.hasOwnProperty('date')) {
-					if (moment(fileMeta.date, "YYYY-MM-DDThh:mm:ss", true).isValid())
-						post.date = moment(fileMeta.date, "YYYY-MM-DDThh:mm:ss").format("YYYY-MM-DDThh:mm:ss")
+					if (moment(fileMeta.date, "YYYY-MM-DDThh:mm:ss", true).isValid()) {
+						post.date.object = moment(fileMeta.date, "YYYY-MM-DDThh:mm:ss").toDate()
+						post.date.localeString = post.date.object.toLocaleString(conf(`content.language`, "string", EConf.Required))
+						post.date.relativeString = `[RELATIVE_DATE=${post.date.object.toISOString()}]`
+					}
 					else
 						console.warn(`Retrieving metadata : Wrong date format (${"YYYY-MM-DDThh:mm:ss".bold}) for the post ${sourcePath.bold}`.yellow)
 				}
@@ -86,6 +94,7 @@ export function getPostMeta(sourcePath: string, blog: IBlog): Promise<void> {
 				if (post.description == "")
 					console.warn(`Retrieving metadata : You didn't provide any description for the post ${sourcePath.bold}`.yellow)
 
+				// ENCLOSURE
 				if (fileMeta.hasOwnProperty('enclosure')) {
 					let enclosurePath = `./${path.join(path.dirname(sourcePath), fileMeta.enclosure)}`
 					fs.promises.access(enclosurePath, fs.constants.R_OK).then(() => {

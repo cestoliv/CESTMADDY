@@ -1,4 +1,4 @@
-import express, { RequestHandler, Response, Request, Send } from 'express'
+import express, { RequestHandler, Response, Request } from 'express'
 import path from 'path'
 import fs from 'fs'
 import moment from 'moment'
@@ -39,20 +39,20 @@ export const static404:RequestHandler = (_req, res, _next) => {
 }
 
 export const redirExtIndexes:RequestHandler = (req, res, next) => {
-    const   indexFiles:string[] = ["index", "post", "podcast"]
-    const   reqPath: string = req.path.replace(/\/$/, "") // remove trailing slash
-    var     newPath: string = reqPath
-    var     filename: string
+	const	indexFiles:string[] = ["index", "post", "episode"]
+	const	reqPath: string = req.path.replace(/\/$/, "") // remove trailing slash
+	var		newPath: string = reqPath
+	var		filename: string
 
-    if(reqPath.endsWith('.html'))
-        newPath = reqPath.substring(0, reqPath.length - 5)
-    filename = newPath.split("/").slice(-1)[0]
-    if(indexFiles.includes(filename))
-        newPath = reqPath.substring(0, newPath.length - filename.length)
-    if(newPath != reqPath)
-        res.redirect(newPath)
-    else
-        next()
+	if(reqPath.endsWith('.html')) // remove .html
+		newPath = reqPath.substring(0, reqPath.length - 5)
+	filename = newPath.split("/").slice(-1)[0]
+	if(indexFiles.includes(filename)) // remove index, post, episode
+		newPath = reqPath.substring(0, newPath.length - filename.length)
+	if(newPath != reqPath)
+		res.redirect(newPath)
+	else
+		next()
 }
 
 export const replaceInHtml:RequestHandler = interceptor((req: Request, res:Response) => {

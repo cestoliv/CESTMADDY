@@ -6,6 +6,7 @@ import { getGeneratedPath } from "./sources"
 export function getPageMeta(sourcePath: string, pages: Array<IPage>): Promise<void> {
 	return new Promise((resolve, _reject) => {
 		let page: IPage = {
+			type: ESourceType.Page,
 			sourcePath,
 			generatedPath: getGeneratedPath(sourcePath, ESourceType.Page)
 		}

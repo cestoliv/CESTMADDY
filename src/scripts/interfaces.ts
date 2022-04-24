@@ -3,19 +3,26 @@ export enum ESourceType {
 	Page,
 	Post,
 	Episode,
+	Error,
 	Other
 }
 
 export interface IPage {
+	type: ESourceType,
 	sourcePath: string,
 	generatedPath: string
 }
 
 export interface IPost {
+	type: ESourceType,
 	sourcePath: string,
 	generatedPath: string,
 	title: string,
-	date: string,
+	date: {
+		object: Date,
+		localeString: string,
+		relativeString: string
+	},
 	author: {
 		name: string,
 		email: string
@@ -34,6 +41,7 @@ export interface IBlog {
 }
 
 export interface IEpisode {
+	type: ESourceType,
 	sourcePath: string,
 	generatedPath: string
 }
@@ -45,11 +53,14 @@ export interface IPodcast {
 }
 
 export interface IOther {
+	type: ESourceType,
 	sourcePath: string,
 	generatedPath: string
 }
 
 export interface ISources {
+	header: string,
+	footer: string,
 	others: Array<IOther>,
 	pages: Array<IPage>,
 	blogs: Array<IBlog>,
