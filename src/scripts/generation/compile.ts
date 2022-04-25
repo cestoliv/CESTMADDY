@@ -112,7 +112,11 @@ export function compilePage(page: IPost | IPage, sources: ISources): Promise<voi
 					language: conf("content.language", "string", EConf.Required),
 					theme: 'clean',
 					header: sources.header,
-					footer: sources.footer
+					footer: sources.footer,
+					favicon: {
+						theme_color: conf("content.favicon.theme_color", "string", EConf.Optional),
+						background: conf("content.favicon.background", "string", EConf.Optional)
+					}
 				},
 				html: ""
 			}

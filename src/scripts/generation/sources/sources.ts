@@ -114,11 +114,13 @@ export function getSources(): Promise<ISources> {
 					if (added) return
 					metaPromises.push(getPageMeta(sourcePath, sources.pages))
 				}
-				sources.others.push({
-					type: ESourceType.Other,
-					sourcePath,
-					generatedPath: getGeneratedPath(sourcePath, ESourceType.Other)
-				})
+				else {
+					sources.others.push({
+						type: ESourceType.Other,
+						sourcePath,
+						generatedPath: getGeneratedPath(sourcePath, ESourceType.Other)
+					})
+				}
 			})
 			Promise.allSettled(metaPromises).then((results) => {
 				let hasFail = false

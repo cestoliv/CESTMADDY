@@ -6,14 +6,13 @@
 	<title><%- content.title %> | <%- site.title %></title>
 	<meta name="description" content="<%- content.description %>">
 
-	<!--  include("../../../../../templates/favicons.ejs") -->
+<%- include("../../favicons.ejs") %>
 
 <%- include("../../css.ejs") %>
 </head>
 <body>
 	<header class="markdown">
 		<%- site.header %>
-		<%- content.type %>
 	</header>
 	<div id="content" class="markdown">
 		<%- html %>

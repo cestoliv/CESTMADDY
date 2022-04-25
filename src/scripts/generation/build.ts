@@ -5,6 +5,7 @@ import fs from 'fs'
 import { getSources } from './sources/sources'
 import { copyTheme, compileOther, compilePage, compileErrors } from './compile'
 import { ISources } from '../interfaces'
+import { createFavicons } from './favicon'
 
 function compileSources(sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -55,7 +56,8 @@ function compileSources(sources: ISources): Promise<void> {
 			Promise.all([
 				compileSources(sources),
 				compileErrors(),
-				copyTheme()
+				copyTheme(),
+				createFavicons()
 			]).then(() => {
 				console.log('COMPILED'.green.bold)
 			}).catch(() => {})
