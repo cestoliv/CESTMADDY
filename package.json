@@ -7,9 +7,9 @@
 	"author": "Olivier Cartier <me@cestoliv.com>",
 	"license": "MIT",
 	"scripts": {
-		"compile": "node dist/scripts/generation/build.js",
-		"start": "node dist/server.js",
-		"start-dev": "nodemon dist/server.js",
+		"compile": "node dist/core/scripts/generation/build.js",
+		"start": "node dist/core/server.js",
+		"start-dev": "nodemon dist/core/server.js",
 		"build": "tsc",
 		"build-dev": "tsc -w"
 	},

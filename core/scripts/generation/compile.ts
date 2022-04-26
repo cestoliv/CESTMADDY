@@ -6,6 +6,7 @@ import hljs from 'highlight.js'
 
 import { EConf, ESourceType, IOther, IPage, IPost, ISources } from "../interfaces"
 import { conf } from '../config'
+import { replaceShortcodes } from './shortcodes'
 
 marked.use({
 	pedantic: false,
@@ -20,11 +21,13 @@ marked.use({
 	}
 })
 
-export function compileHTML(markdown: string): Promise<string> {
+export function compileHTML(markdown: string, sourcePath: string, sources: ISources): Promise<string> {
 	return new Promise((resolve, reject) => {
-		marked(markdown, (err, html) => {
-			if(err) return reject(err)
-			resolve(html)
+		replaceShortcodes(markdown, sourcePath, sources, 0).then((markdown) => {
+			marked(markdown, (err, html) => {
+				if(err) return reject(err)
+				resolve(html)
+			})
 		})
 	})
 }
@@ -32,7 +35,7 @@ export function compileHTML(markdown: string): Promise<string> {
 export function copyTheme(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		let themeName: string = 'clean'
-		let themePath: string = path.join('./', 'src', 'built-in', 'themes', themeName)
+		let themePath: string = path.join('./', 'core', 'built-in', 'themes', themeName)
 
 		fs.promises.cp(themePath, path.join('./', 'cestici', 'generated', 'front', 'theme'), {recursive: true}).then(() => {
 			resolve()
@@ -46,7 +49,7 @@ export function copyTheme(): Promise<void> {
 export function compileErrors(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const	codes: number[] = [404, 500]
-		const	templateDirs: string = path.join('./', 'src', 'built-in', 'themes', 'clean', 'templates', 'errors')
+		const	templateDirs: string = path.join('./', 'core', 'built-in', 'themes', 'clean', 'templates', 'errors')
 		var		compilePromises: Array<Promise<void>> = new Array()
 
 		codes.forEach((code) => {
@@ -103,7 +106,7 @@ export function compileErrors(): Promise<void> {
 export function compilePage(page: IPost | IPage, sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
 		fs.promises.readFile(page.sourcePath, 'utf-8').then((data) => {
-			let templateDir: string = path.join('./', 'src', 'built-in', 'themes', 'clean', 'templates')
+			let templateDir: string = path.join('./', 'core', 'built-in', 'themes', 'clean', 'templates')
 			let templatePath: string = path.join(templateDir, 'page.ejs')
 			let renderOptions = {
 				content: page,
@@ -124,7 +127,7 @@ export function compilePage(page: IPost | IPage, sources: ISources): Promise<voi
 			if (page.type == ESourceType.Post)
 				templatePath = path.join(templateDir, 'post.ejs')
 
-			compileHTML(data).then((html) => {
+			compileHTML(data, page.sourcePath, sources).then((html) => {
 				renderOptions.html = html;
 				ejs.renderFile(templatePath, renderOptions, (err, html) => {
 					if(err) return reject(`Compiling : Error ${page.sourcePath.bold} : ${err}`.red)

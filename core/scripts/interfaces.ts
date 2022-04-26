@@ -17,6 +17,7 @@ export interface IPost {
 	type: ESourceType,
 	sourcePath: string,
 	generatedPath: string,
+	webPath: string,
 	title: string,
 	date: {
 		object: Date,

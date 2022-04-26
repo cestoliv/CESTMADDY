@@ -6,7 +6,7 @@ import moment from 'moment'
 
 import { IBlog, IPost, ESourceType, EConf } from '../../interfaces'
 import { conf } from '../../config'
-import { getGeneratedPath } from './sources'
+import { getGeneratedPath, getWebPath } from './sources'
 
 export function getBlogsStruct(): Array<IBlog> {
 	let struct: Array<IBlog> = new Array()
@@ -32,6 +32,7 @@ export function getPostMeta(sourcePath: string, blog: IBlog): Promise<void> {
 				type: ESourceType.Post,
 				sourcePath,
 				generatedPath: getGeneratedPath(sourcePath, ESourceType.Post),
+				webPath: getWebPath(sourcePath, ESourceType.Post),
 				title: "Unnamed",
 				date: {
 					object: new Date(),
@@ -96,10 +97,10 @@ export function getPostMeta(sourcePath: string, blog: IBlog): Promise<void> {
 
 				// ENCLOSURE
 				if (fileMeta.hasOwnProperty('enclosure')) {
-					let enclosurePath = `./${path.join(path.dirname(sourcePath), fileMeta.enclosure)}`
+					let enclosurePath = path.join(path.dirname(sourcePath), fileMeta.enclosure)
 					fs.promises.access(enclosurePath, fs.constants.R_OK).then(() => {
 						post.enclosure.generatedPath = getGeneratedPath(enclosurePath, ESourceType.Other)
-						post.enclosure.webPath = ""
+						post.enclosure.webPath = getWebPath(enclosurePath, ESourceType.Other)
 					}).catch(() => {
 						console.warn(`Retrieving metadata : the enclosure ${enclosurePath.bold} for the post ${sourcePath.bold} does not exist`.yellow)
 					}).finally(() => {
