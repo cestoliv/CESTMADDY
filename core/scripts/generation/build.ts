@@ -4,9 +4,10 @@ import fs from 'fs'
 
 import { getSources } from './sources'
 import { copyTheme, compileOther, compilePage, compileErrors } from './compile'
-import { ISources } from '../interfaces'
+import { EConf, ISources } from '../interfaces'
 import { createFavicons } from './favicon'
 import { createFeeds } from './feed'
+import { conf } from '../config'
 
 function compileSources(sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -47,6 +48,7 @@ function compileSources(sources: ISources): Promise<void> {
 }
 
 (async function main() {
+	process.title = `cmy generation ${conf("content.title", "string", EConf.Optional)}`
 	console.log("Retrieving metadata".blue)
 	// RETRIEVE SOURCES
 	getSources().then((sources) => {
