@@ -66,12 +66,12 @@ export const replaceInHtml:RequestHandler = interceptor((req: Request, res:Respo
         },
         intercept: (html: string, send: (arg0: string) => void) => {
 			// RELATIVE DATE
-			html = html.replace(/\w*(?<!\$)\[RELATIVE_DATE([\s\S]*?)\]/g, (_: string, iso_date: string) => {
+			html = html.replace(/\w*(?<!\$)\$\{RELATIVE_DATE([\s\S]*?)\}/g, (_: string, iso_date: string) => {
                 iso_date = iso_date.substring(1) // remove the =
                 return moment(iso_date, "YYYY-MM-DDThh:mm:ss").fromNow();
             })
 			// DOMAIN
-			html = html.replace(/\w*(?<!\$)\[DOMAIN\]/g, `${req.protocol}://${req.headers.host}`)
+			html = html.replace(/\w*(?<!\$)\$\{DOMAIN\}/g, `${req.protocol}://${req.headers.host}`)
 			send(html)
         }
     }

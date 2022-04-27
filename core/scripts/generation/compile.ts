@@ -120,15 +120,14 @@ export function compilePage(page: IPost | IPage, sources: ISources): Promise<voi
 						theme_color: conf("content.favicon.theme_color", "string", EConf.Optional),
 						background: conf("content.favicon.background", "string", EConf.Optional)
 					}
-				},
-				html: ""
+				}
 			}
 
 			if (page.type == ESourceType.Post)
 				templatePath = path.join(templateDir, 'post.ejs')
 
 			compileHTML(data, page.sourcePath, sources).then((html) => {
-				renderOptions.html = html;
+				page.content = html
 				ejs.renderFile(templatePath, renderOptions, (err, html) => {
 					if(err) return reject(`Compiling : Error ${page.sourcePath.bold} : ${err}`.red)
 					fs.mkdir(path.dirname(page.generatedPath), {recursive: true}, (err) => {

@@ -18,7 +18,7 @@
 		<img class="post_enclosure" src="<%- content.enclosure.webPath %>" />
 		<h1 class="post_title"><%- content.title %></h1>
 		<p class="post_infos"><%- content.author.name %>, <strong><%- content.date.relativeString %></strong><%- content.date.localeString %></p>
-		<%- html %>
+		<%- content.content %>
 
 		<!--  include("../../../../templates/comments.ejs") -->
 	</div>

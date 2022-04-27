@@ -2,10 +2,11 @@ import '@colors/colors'
 import path from 'path'
 import fs from 'fs'
 
-import { getSources } from './sources/sources'
+import { getSources } from './sources'
 import { copyTheme, compileOther, compilePage, compileErrors } from './compile'
 import { ISources } from '../interfaces'
 import { createFavicons } from './favicon'
+import { createFeeds } from './feed'
 
 function compileSources(sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -59,7 +60,12 @@ function compileSources(sources: ISources): Promise<void> {
 				copyTheme(),
 				createFavicons()
 			]).then(() => {
-				console.log('COMPILED'.green.bold)
+				createFeeds(sources).then(() => {
+					console.log('COMPILED'.green.bold)
+
+					var used = process.memoryUsage().heapUsed / 1024 / 1024;
+					console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
+				}).catch(() => {})
 			}).catch(() => {})
 		}).catch((err) => { console.error(`Compiling : Error : ${err}`.red) })
 	}).catch(() => {})

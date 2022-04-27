@@ -10,7 +10,8 @@ export enum ESourceType {
 export interface IPage {
 	type: ESourceType,
 	sourcePath: string,
-	generatedPath: string
+	generatedPath: string,
+	content: ""
 }
 
 export interface IPost {
@@ -32,7 +33,8 @@ export interface IPost {
 	enclosure: {
 		generatedPath: string,
 		webPath: string
-	}
+	},
+	content: string
 }
 
 export interface IBlog {
