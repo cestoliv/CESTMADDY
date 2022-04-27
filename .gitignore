@@ -1,11 +1,3 @@
-# Ignore cestici, except hello.ts shortcode
-cestici/*
-!cestici/custom
-cestici/custom/*
-!cestici/custom/shortcodes
-cestici/custom/shortcodes/*
-!cestici/custom/shortcodes/hello.ts
-
 dist/
 
 node_modules/

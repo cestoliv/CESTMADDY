@@ -21,6 +21,18 @@ marked.use({
 	}
 })
 
+function getThemePath(): string {
+	const builtInThemes = ["clean"]
+	var themeName: string | null = 'clean'
+	var themePath: string = path.join('./', 'core', 'built-in', 'themes', themeName)
+
+	themeName = conf("content.theme", "string", EConf.Optional)
+	if (themeName && themeName != "" && !builtInThemes.includes(themeName))
+		themePath = path.join('./', 'cestici', 'custom', 'themes', themeName)
+
+	return themePath
+}
+
 export function compileHTML(markdown: string, sourcePath: string, sources: ISources): Promise<string> {
 	return new Promise((resolve, reject) => {
 		replaceShortcodes(markdown, sourcePath, sources, 0).then((markdown) => {
@@ -34,10 +46,7 @@ export function compileHTML(markdown: string, sourcePath: string, sources: ISour
 
 export function copyTheme(): Promise<void> {
 	return new Promise((resolve, reject) => {
-		let themeName: string = 'clean'
-		let themePath: string = path.join('./', 'core', 'built-in', 'themes', themeName)
-
-		fs.promises.cp(themePath, path.join('./', 'cestici', 'generated', 'front', 'theme'), {recursive: true}).then(() => {
+		fs.promises.cp(getThemePath(), path.join('./', 'cestici', 'generated', 'front', 'theme'), {recursive: true}).then(() => {
 			resolve()
 		}).catch((err) => {
 			console.error(`Copy theme files : Error : ${err}`.red)
@@ -49,7 +58,7 @@ export function copyTheme(): Promise<void> {
 export function compileErrors(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const	codes: number[] = [404, 500]
-		const	templateDirs: string = path.join('./', 'core', 'built-in', 'themes', 'clean', 'templates', 'errors')
+		const	templateDirs: string = path.join(getThemePath(), 'templates', 'errors')
 		var		compilePromises: Array<Promise<void>> = new Array()
 
 		codes.forEach((code) => {
@@ -106,7 +115,7 @@ export function compileErrors(): Promise<void> {
 export function compilePage(page: IPost | IPage, sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
 		fs.promises.readFile(page.sourcePath, 'utf-8').then((data) => {
-			let templateDir: string = path.join('./', 'core', 'built-in', 'themes', 'clean', 'templates')
+			let templateDir: string = path.join(getThemePath(), 'templates')
 			let templatePath: string = path.join(templateDir, 'page.ejs')
 			let renderOptions = {
 				content: page,
