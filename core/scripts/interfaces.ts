@@ -67,6 +67,30 @@ export interface ISources {
 	blogs: Array<IBlog>,
 	podcasts: Array<IPodcast>
 }
+
+export function isPage(page: IPage | IPost | IEpisode): page is IPage {
+	return (page.type == ESourceType.Page)
+}
+
+export function isPost(page: IPage | IPost | IEpisode): page is IPost {
+	return (page.type == ESourceType.Post)
+}
+
+export function isEpisode(page: IPage | IPost | IEpisode): page is IEpisode {
+	return (page.type == ESourceType.Episode)
+}
+
+export function isPages(data: Array<IPage> | IBlog | IPodcast): data is Array<IPage> {
+	return (!('posts' in data))
+}
+
+export function isBlog(data: Array<IPage> | IBlog | IPodcast): data is IBlog {
+	return ('posts' in data)
+}
+
+export function isPodcast(data: Array<IPage> | IBlog | IPodcast): data is IPodcast {
+	return ('episodes' in data)
+}
 //#endregion
 
 export enum EConf {
