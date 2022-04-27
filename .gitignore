@@ -1,5 +1,5 @@
 dist/
-
+.env
 node_modules/
 TODO.md
 v1/

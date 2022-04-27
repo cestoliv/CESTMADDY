@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "esnext",
 		"module": "commonjs",
-		"rootDirs": ["core", "cestici/custom/shortcodes"],
+		"rootDir": "./",
 		"moduleResolution": "node",
 		"outDir": "./dist",
 		"esModuleInterop": true,

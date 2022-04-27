@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  cestmaddy:
+    # If you want to build from Dockerfile
+    build: .
+    # If you want to use image
+      # image: "registry.chevro.fr/cestoliv/cestmaddy:latest"
+    container_name: "cestmaddy"
+    command: "sh -c \"npm run build && npm run compile && npm run start\""
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - ./cestici/:/cestmaddy/cestici/
