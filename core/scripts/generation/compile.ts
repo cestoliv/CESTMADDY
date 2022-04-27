@@ -73,7 +73,14 @@ export function compileErrors(): Promise<void> {
 						},
 						site: {
 							title: conf("content.title", "string", EConf.Required),
-						}
+							language: conf("content.language", "string", EConf.Required),
+							favicon: {
+								theme_color: conf("content.favicon.theme_color", "string", EConf.Optional),
+								background: conf("content.favicon.background", "string", EConf.Optional)
+							}
+						},
+						ejsFavicons: path.resolve('core', 'built-in', 'themes', 'favicons.ejs'),
+						ejsCSS: path.resolve('core', 'built-in', 'themes', 'css.ejs')
 					}
 
 					ejs.renderFile(templatePath, renderOptions, (err, html) => {
@@ -122,14 +129,15 @@ export function compilePage(page: IPost | IPage, sources: ISources): Promise<voi
 				site: {
 					title: conf("content.title", "string", EConf.Required),
 					language: conf("content.language", "string", EConf.Required),
-					theme: 'clean',
 					header: sources.header,
 					footer: sources.footer,
 					favicon: {
 						theme_color: conf("content.favicon.theme_color", "string", EConf.Optional),
 						background: conf("content.favicon.background", "string", EConf.Optional)
 					}
-				}
+				},
+				ejsFavicons: path.resolve('core', 'built-in', 'themes', 'favicons.ejs'),
+				ejsCSS: path.resolve('core', 'built-in', 'themes', 'css.ejs')
 			}
 
 			if (page.type == ESourceType.Post)

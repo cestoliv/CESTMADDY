@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%- site.language %>">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><%- content.title %> | <%- site.title %></title>
 	<meta name="description" content="<%- content.description %>">
 
-<%- include("../../favicons.ejs") %>
+<%- include(ejsFavicons) %>
 
-<%- include("../../css.ejs") %>
+<%- include(ejsCSS) %>
 </head>
 <body>
 	<header class="markdown">
