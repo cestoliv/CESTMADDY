@@ -18,6 +18,16 @@ marked.use({
 	xhtml: false,
 	highlight: function(code) {
 		return hljs.highlightAuto(code).value;
+	},
+	renderer: {
+		image(href: string, title: string, text: string) {
+			let imageHTML = `<img loading="lazy"`
+			if (text) imageHTML += ` alt="${text}"`
+			if (title) imageHTML += ` title="${title}"`
+			if (href) imageHTML += ` src="${href}"`
+			imageHTML += `>`
+			return imageHTML
+		}
 	}
 })
 
