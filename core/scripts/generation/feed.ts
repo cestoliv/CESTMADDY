@@ -36,10 +36,10 @@ function createBlogFeed(blog: IBlog): Promise<void> {
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 	<channel>
 		<title>${blog.name}</title>
-		<description>${/* TODO */""}</description>
+		<description>${blog.description}</description>
 		<link>\${DOMAIN}/${blog.path}</link>
-		<category>${/* TODO */""}</category>
-		<language>${/* TODO */""}</language>
+		<category>${blog.category}</category>
+		<language>${blog.language}</language>
 		${postsFeed}
 	</channel>
 </rss>`

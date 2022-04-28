@@ -40,6 +40,9 @@ export interface IPost {
 export interface IBlog {
 	name: string,
 	path: string,
+	description: string,
+	category: string,
+	language: string,
 	posts: Array<IPost>
 }
 

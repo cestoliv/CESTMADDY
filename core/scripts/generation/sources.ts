@@ -14,9 +14,22 @@ export function getBlogsStruct(): Array<IBlog> {
 		return struct
 	Object.keys(config).forEach((bName) => {
 		let bDir = conf(`content.blogs.${bName}.dir`, "string", EConf.Required)
+		let bDescription = conf(`content.blogs.${bName}.description`, "string", EConf.Optional)
+		let bCategory = conf(`content.blogs.${bName}.category`, "string", EConf.Optional)
+		let bLanguage = conf(`content.blogs.${bName}.language`, "string", EConf.Optional)
+
+		if (!bDescription)
+			bDescription = ""
+		if (!bCategory)
+			bCategory = ""
+		if (!bLanguage)
+			bLanguage = conf("content.language", "string", EConf.Required)
 		struct.push({
 			name: bName,
 			path: path.join("./cestici/source", bDir),
+			category: bCategory,
+			description: bDescription,
+			language: bLanguage,
 			posts: new Array()
 		})
 	})
