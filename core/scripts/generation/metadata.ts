@@ -37,6 +37,8 @@ function getEmptyPage(sourcePath: string): IPage {
 		type: ESourceType.Page,
 		sourcePath,
 		generatedPath: getGeneratedPath(sourcePath, ESourceType.Page),
+		title: "Unnamed",
+		description: "",
 		content: "" // set in compilation
 	}
 }
@@ -81,7 +83,7 @@ export function getMeta(sourcePath: string, data: Array<IPage> | IBlog | IPodcas
 				////////
 				// TITLE
 				////////
-				if (isPost(page)) {
+				if (isPost(page) || isPage(page)) {
 					if (fileMeta.hasOwnProperty('title'))
 						page.title = fileMeta.title
 					else
@@ -114,7 +116,7 @@ export function getMeta(sourcePath: string, data: Array<IPage> | IBlog | IPodcas
 				//////////////
 				// DESCRIPTION
 				//////////////
-				if (isPost(page)) {
+				if (isPost(page) || isPage(page)) {
 					if (fileMeta.hasOwnProperty('description'))
 						page.description = fileMeta.description
 					if (page.description == "")

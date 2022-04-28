@@ -11,7 +11,9 @@ export interface IPage {
 	type: ESourceType,
 	sourcePath: string,
 	generatedPath: string,
-	content: ""
+	title: string,
+	description: string,
+	content: string
 }
 
 export interface IPost {
