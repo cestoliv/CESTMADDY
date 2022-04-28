@@ -52,6 +52,7 @@ export function compile(scSettings: any, sources: ISources): Promise<string> {
 					</a>
 				</li>`.replace(/[\n\r]/g, '')
 		})
+		HTMLlist += `</ul>`
 		resolve(HTMLlist)
 	})
 }
