@@ -35,6 +35,9 @@ function getThemePath(): string {
 
 export function compileHTML(markdown: string, sourcePath: string, sources: ISources): Promise<string> {
 	return new Promise((resolve, reject) => {
+		let metaReg: RegExp = new RegExp(/^---([\s\S]+?)---/, 'gmy')
+
+		markdown = markdown.replace(metaReg, '')
 		replaceShortcodes(markdown, sourcePath, sources, 0).then((markdown) => {
 			marked(markdown, (err, html) => {
 				if(err) return reject(err)
