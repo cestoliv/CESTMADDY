@@ -47,7 +47,7 @@ export function compile(scSettings: any, sources: ISources): Promise<string> {
 								${post.date.object.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
 							</p>
 							<p class="list_blog_title">${post.title}</p>
-							<div class="list_blog_description">${post.description}</div>
+							<p class="list_blog_description">${post.description}</p>
 						</div>
 					</a>
 				</li>`.replace(/[\n\r]/g, '')
