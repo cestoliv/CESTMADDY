@@ -49,8 +49,8 @@ function getEmptyEpisode(sourcePath: string, podcast: IPodcast): IEpisode {
 	return {
 		type: ESourceType.Episode,
 		sourcePath,
-		generatedPath: getGeneratedPath(sourcePath, ESourceType.Post),
-		webPath: getWebPath(sourcePath, ESourceType.Post),
+		generatedPath: getGeneratedPath(sourcePath, ESourceType.Episode),
+		webPath: getWebPath(sourcePath, ESourceType.Episode),
 		title: "Unnamed",
 		date: {
 			object: new Date(),

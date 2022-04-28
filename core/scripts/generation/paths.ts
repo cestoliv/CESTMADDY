@@ -32,12 +32,23 @@ export function getGeneratedPath(sourcePath: string, sourceType: ESourceType): s
 }
 
 export function getWebPath(sourcePath: string, sourceType: ESourceType): string {
-	let generatedPath: string
+	let webPath: string
 
 	// Remove everything before the first source/
-	generatedPath = `/${sourcePath.split("source/").slice(1, sourcePath.length).join("source/")}`
+	webPath = `/${sourcePath.split("source/").slice(1, sourcePath.length).join("source/")}`
 	// Remove extension
 	if (sourceType != ESourceType.Other)
-		generatedPath = generatedPath.split('.').slice(0, -1).join('.')
-	return generatedPath
+		webPath = webPath.split('.').slice(0, -1).join('.')
+	// Remove index, post and episode at the end
+	if (sourceType == ESourceType.Page)
+		if (webPath.endsWith("/index"))
+			webPath = webPath.split('/').slice(0, -1).join('/')
+	if (sourceType == ESourceType.Post)
+		if (webPath.endsWith("/post"))
+			webPath = webPath.split('/').slice(0, -1).join('/')
+	if (sourceType == ESourceType.Episode)
+		if (webPath.endsWith("/episode"))
+			webPath = webPath.split('/').slice(0, -1).join('/')
+
+	return webPath
 }
