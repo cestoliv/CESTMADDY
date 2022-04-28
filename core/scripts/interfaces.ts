@@ -51,12 +51,52 @@ export interface IBlog {
 export interface IEpisode {
 	type: ESourceType,
 	sourcePath: string,
-	generatedPath: string
+	generatedPath: string,
+	webPath: string,
+	title: string,
+	date: {
+		object: Date,
+		localeString: string,
+		relativeString: string
+	},
+	author: {
+		name: string,
+		email: string
+	},
+	description: string,
+	enclosure: {
+		generatedPath: string,
+		webPath: string
+	},
+	audio: {
+		generatedPath: string,
+		webPath: string,
+		mime: string,
+		length: number,
+		duration: number
+	}
+	platforms: object
 }
 
 export interface IPodcast {
 	name: string,
 	path: string,
+	description: string,
+	enclosure: {
+		generatedPath: string,
+		webPath: string
+	},
+	category: string,
+	language: string,
+	country: string,
+	explicit: string,
+	complete: string,
+	type: string,
+	limit: number,
+	author: {
+		name: string,
+		email: string
+	}
 	episodes: Array<IEpisode>
 }
 

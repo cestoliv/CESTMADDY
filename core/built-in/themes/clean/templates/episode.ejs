@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><%- podcast.title %> | <%- site.title %></title>
-	<meta name="description" content="<%- podcast.meta_description %>">
+	<title><%- content.title %> | <%- site.title %></title>
+	<meta name="description" content="<%- content.description %>">
 
 <%- include(ejsFavicons) %>
 
@@ -16,28 +16,28 @@
 	</header>
 	<div id="content" class="markdown">
 		<div class="podcast_image_n_title">
-			<img class="podcast_image" src="<%- podcast.image %>" />
-			<h1 class="podcast_title"><%- podcast.title %></h1>
+			<img class="podcast_image" src="<%- content.enclosure.webPath  %>" />
+			<h1 class="podcast_title"><%- content.title %></h1>
 		</div>
 
 		<div class="podcast_links">
-			<% for(service in podcast.links) { %>
-				<a href="<%= podcast.links[service] %>" class="podcast_link <%= service %>_icon"><svg><use xlink:href="/front/theme/srcs/icons/<%= service %>.svg#icon"></use></svg></a>
+			<% for(platform in content.platforms) { %>
+				<a href="<%= content.platforms[platform] %>" class="podcast_link <%= platform %>_icon"><svg><use xlink:href="/front/theme/srcs/icons/<%= platform %>.svg#icon"></use></svg></a>
 			<% } %>
 		</div>
 
 		<audio controls class="podcast_audio">
-			<source src="<%- podcast.enclosure.url %>" type="<%- podcast.enclosure.type %>">
-				<a href="<%- podcast.enclosure.url %>"><%- podcast.title %></a>
+			<source src="<%- content.audio.webPath %>" type="<%- content.audio.mime %>">
+			<a href="<%- content.audio.webPath %>"><%- content.title %></a>
 		</audio>
 
-		<p class="podcast_infos"><%- podcast.author.name %>, <strong><%- podcast.relative_date %></strong> <%- podcast.date_string %></p>
+		<p class="podcast_infos"><%- content.author.name %>, <strong><%- content.date.relativeString%></strong> <%- content.date.localeString %></p>
 
 		<div class="podcast_description">
-			<%- podcast.description %>
+			<%- content.description %>
 		</div>
 
-		<%- include("../../../../../templates/comments.ejs") %>
+		<!-- <- include("../../../../../templates/comments.ejs") %> -->
 	</div>
 	<footer class="markdown">
 		<%- site.footer %>

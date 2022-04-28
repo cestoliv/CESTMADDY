@@ -1,8 +1,8 @@
 import fs from "fs"
-import path from "path";
+import path from "path"
 
-import { ESourceType, IBlog, IEpisode, IPodcast, IPost, ISources } from "../interfaces";
-import { getGeneratedPath } from "./paths";
+import { ESourceType, IBlog, IEpisode, IPodcast, IPost, ISources } from "../interfaces"
+import { getGeneratedPath, getWebPath } from "./paths"
 
 function createBlogFeed(blog: IBlog): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -23,6 +23,7 @@ function createBlogFeed(blog: IBlog): Promise<void> {
 			postsFeed += `<item>
 			<title>${post.title}</title>
 			<link>\${DOMAIN}${post.webPath}</link>
+			<guid>${post.webPath}</guid>
 			<description>${post.description}</description>
 			<author>${post.author.email} (${post.author.name})</author>
 			<enclosure url="${enclosureUrl}"/>
@@ -62,29 +63,39 @@ function createPodcastFeed(podcast: IPodcast): Promise<void> {
 		var feed: string
 		var episodesFeed: string = ""
 		var feedPath = getGeneratedPath(path.join(podcast.path, 'rss.xml'), ESourceType.Other)
+		var webFeedPath = getWebPath(path.join(podcast.path, 'rss.xml'), ESourceType.Other)
 
-		// TODO: Sort by date
-		episodes = podcast.episodes
-		/*
+		// Sort by date
 		episodes = podcast.episodes.sort((a, b) => {
 			return a.date.object < b.date.object ? 1 : -1
 		})
-		*/
 
 		episodes.forEach((episode) => {
+			let enclosureUrl = ""
+			let audioUrl = ""
+
+			if (episode.enclosure.webPath != "")
+				enclosureUrl = `\${DOMAIN}${episode.enclosure.webPath}`
+			if (episode.audio.webPath != "")
+				audioUrl = `\${DOMAIN}${episode.audio.webPath}`
+
 			episodesFeed += `<item>
-			<title>${/* TODO */""}</title>
-			<link>${/* TODO */""}</link>
-			<guid>${/* TODO */""}</guid>
-			<description><![CDATA[${/* TODO */""}]]></description>
-			<author>${/* TODO */""} (${/* TODO */""})</author>
-			<enclosure url="${/* TODO */""}" length="${/* TODO */""}" type="${/* TODO */""}"/>
-			<pubDate>${/* TODO */""}</pubDate>
-			<itunes:duration>${/* TODO */""}</itunes:duration>
-			<itunes:image href="${/* TODO */""}" />
+			<title>${episode.title}</title>
+			<link>\${DOMAIN}${episode.webPath}</link>
+			<guid>${episode.webPath}</guid>
+			<description><![CDATA[${episode.description}]]></description>
+			<author>${episode.author.email} (${episode.author.name})</author>
+			<enclosure url="${audioUrl}" length="${episode.audio.length}" type="${episode.audio.mime}"/>
+			<pubDate>${episode.date.object.toUTCString()}</pubDate>
+			<itunes:duration>${episode.audio.duration}</itunes:duration>
+			<itunes:image href="${enclosureUrl}" />
 		</item>
 		`
 		})
+
+		let enclosureUrl = ""
+		if (podcast.enclosure.webPath != "")
+			enclosureUrl = `\${DOMAIN}${podcast.enclosure.webPath}`
 
 		feed = `<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"
@@ -97,35 +108,35 @@ function createPodcastFeed(podcast: IPodcast): Promise<void> {
 	xmlns:psc="https://podlove.org/simple-chapters/"
 >
 	<channel>
-		<atom:link href="${feedPath}" rel="self" type="application/rss+xml" />
+		<atom:link href="\${DOMAIN}${webFeedPath}" rel="self" type="application/rss+xml" />
 		<title>${podcast.name}</title>
 		<link>\${DOMAIN}/${podcast.path}</link>
-		<description>${/* TODO */""}</description>
+		<description>${podcast.description}</description>
 		<image>
-			<link>${/* TODO */""}</link>
-			<title>${/* TODO */""}</title>
-			<url>${/* TODO */""}</url>
+			<link>\${DOMAIN}/${podcast.path}</link>
+			<title>${podcast.name}</title>
+			<url>${enclosureUrl}</url>
 		</image>
-		<language>${/* TODO */""}</language>
+		<language>${podcast.language}</language>
 
-		<googleplay:author>${/* TODO */""}</googleplay:author>
-		<googleplay:image href="${/* TODO */""}"/>
-		<googleplay:category text="${/* TODO */""}"/>
-		<googleplay:explicit>"${/* TODO */""}</googleplay:explicit>
+		<googleplay:author>${podcast.author.name}</googleplay:author>
+		<googleplay:image href="${enclosureUrl}"/>
+		<googleplay:category text="${podcast.category}"/>
+		<googleplay:explicit>"${podcast.explicit}</googleplay:explicit>
 
 		<itunes:owner>
-			<itunes:name>${/* TODO */""}</itunes:name>
-			<itunes:email>${/* TODO */""}</itunes:email>
+			<itunes:name>${podcast.author.name}</itunes:name>
+			<itunes:email>${podcast.author.email}</itunes:email>
 		</itunes:owner>
-		<itunes:author>${/* TODO */""}</itunes:author>
-		<itunes:image href="${/* TODO */""}"/>
-		<itunes:category text="${/* TODO */""}"/>
-		<itunes:complete>${/* TODO */""}</itunes:complete>
-		<itunes:explicit>${/* TODO */""}</itunes:explicit>
-		<itunes:type>${/* TODO */""}</itunes:type>
+		<itunes:author>${podcast.author.name}</itunes:author>
+		<itunes:image href="${enclosureUrl}"/>
+		<itunes:category text="${podcast.category}"/>
+		<itunes:complete>${podcast.complete}</itunes:complete>
+		<itunes:explicit>${podcast.explicit}</itunes:explicit>
+		<itunes:type>${podcast.type}</itunes:type>
 
-		<spotify:limit>${/* TODO */""}</spotify:limit>
-		<spotify:countryOfOrigin>${/* TODO */""}</spotify:countryOfOrigin>
+		<spotify:limit>${podcast.limit}</spotify:limit>
+		<spotify:countryOfOrigin>${podcast.country}</spotify:countryOfOrigin>
 	${episodesFeed}
 	</channel>
 </rss>`

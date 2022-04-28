@@ -4,7 +4,7 @@ import ejs from 'ejs'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
 
-import { EConf, ESourceType, IOther, IPage, IPost, ISources } from "../interfaces"
+import { EConf, ESourceType, IEpisode, IOther, IPage, IPost, isEpisode, ISources, isPage, isPost } from "../interfaces"
 import { conf } from '../config'
 import { replaceShortcodes } from './shortcodes'
 
@@ -122,7 +122,7 @@ export function compileErrors(): Promise<void> {
 	})
 }
 
-export function compilePage(page: IPost | IPage, sources: ISources): Promise<void> {
+export function compilePage(page: IPage | IPost | IEpisode, sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
 		fs.promises.readFile(page.sourcePath, 'utf-8').then((data) => {
 			let templateDir: string = path.join(getThemePath(), 'templates')
@@ -143,11 +143,14 @@ export function compilePage(page: IPost | IPage, sources: ISources): Promise<voi
 				ejsCSS: path.resolve('core', 'built-in', 'themes', 'css.ejs')
 			}
 
-			if (page.type == ESourceType.Post)
+			if (isPost(page))
 				templatePath = path.join(templateDir, 'post.ejs')
+			else if (isEpisode(page))
+				templatePath = path.join(templateDir, 'episode.ejs')
 
 			compileHTML(data, page.sourcePath, sources).then((html) => {
-				page.content = html
+				if (isPage(page) || isPost(page))
+					page.content = html
 				ejs.renderFile(templatePath, renderOptions, (err, html) => {
 					if(err) return reject(`Compiling : Error ${page.sourcePath.bold} : ${err}`.red)
 					fs.mkdir(path.dirname(page.generatedPath), {recursive: true}, (err) => {

@@ -20,6 +20,13 @@ function compileSources(sources: ISources): Promise<void> {
 			})
 		})
 
+		// Podcast episodes
+		sources.podcasts.forEach((podcast) => {
+			podcast.episodes.forEach((episode) => {
+				compilePromises.push(compilePage(episode, sources))
+			})
+		})
+
 		// Pages
 		sources.pages.forEach((page) => {
 			compilePromises.push(compilePage(page, sources))

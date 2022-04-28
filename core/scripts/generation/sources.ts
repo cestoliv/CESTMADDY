@@ -4,7 +4,7 @@ import { conf } from '../config'
 import { EConf, ESourceType, IBlog, IPodcast, ISources } from '../interfaces'
 import { getFooter, getFooterPath, getHeader, getHeaderPath } from './header_footer'
 import { getMeta } from './metadata'
-import { getGeneratedPath, getPathsRecur } from './paths'
+import { getGeneratedPath, getPathsRecur, getWebPath } from './paths'
 
 export function getBlogsStruct(): Array<IBlog> {
 	let struct: Array<IBlog> = new Array()
@@ -42,13 +42,39 @@ export function getPodcastsStruct(): Array<IPodcast> {
 
 	if (!config)
 		return struct
-	Object.keys(config).forEach((bName) => {
-		let bDir = conf(`content.podcasts.${bName}.dir`, "string", EConf.Required)
-		struct.push({
-			name: bName,
-			path: path.join("./cestici/source", bDir),
-			episodes: new Array()
-		})
+	Object.keys(config).forEach((pName) => {
+		let podcast: IPodcast
+		let pDir = conf(`content.podcasts.${pName}.dir`, "string", EConf.Required)
+		let pAuthor = conf(`content.podcasts.${pName}.main_author`, "string", EConf.Required)
+		let enclosurePath = conf(`content.podcasts.${pName}.enclosure`, "string", EConf.Optional)
+
+		podcast = {
+			name: pName,
+			path: path.join("./cestici/source", pDir),
+			episodes: new Array(),
+			author: {
+				name: pAuthor,
+				email: conf(`content.podcasts.${pName}.authors.${pAuthor}`, "string", EConf.Required)
+			},
+			description: conf(`content.podcasts.${pName}.description`, "string", EConf.Optional),
+			language: conf(`content.podcasts.${pName}.language`, "string", EConf.Optional),
+			country: conf(`content.podcasts.${pName}.country`, "string", EConf.Optional),
+			category: conf(`content.podcasts.${pName}.category`, "string", EConf.Optional),
+			explicit: conf(`content.podcasts.${pName}.explicit`, "string", EConf.Optional),
+			complete: conf(`content.podcasts.${pName}.complete`, "string", EConf.Optional),
+			type: conf(`content.podcasts.${pName}.type`, "string", EConf.Optional),
+			limit: conf(`content.podcasts.${pName}.limit`, "number", EConf.Optional),
+			enclosure: {
+				generatedPath: "",
+				webPath: ""
+			}
+		}
+		if (enclosurePath) {
+			enclosurePath = path.join('cestici', 'source', enclosurePath)
+			podcast.enclosure.generatedPath = getGeneratedPath(enclosurePath, ESourceType.Other)
+			podcast.enclosure.webPath = getWebPath(enclosurePath, ESourceType.Other)
+		}
+		struct.push(podcast)
 	})
 	return struct
 }
