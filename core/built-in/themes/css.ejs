@@ -10,3 +10,6 @@
 	<link rel="stylesheet" href="/front/theme/css/podcast.css">
 	<link rel="stylesheet" href="/front/theme/css/hljs.css">
 	<link rel="stylesheet" href="/front/theme/css/page.css">
+	<% if (content.css) content.css.forEach((css) => { %>
+	<link rel="stylesheet" href="/front/theme/css/additional/<%- css %>"
+	><% }) %>

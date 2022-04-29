@@ -13,6 +13,7 @@ export interface IPage {
 	generatedPath: string,
 	title: string,
 	description: string,
+	css: Array<String>,
 	content: string
 }
 
@@ -36,6 +37,7 @@ export interface IPost {
 		generatedPath: string,
 		webPath: string
 	},
+	css: Array<String>,
 	content: string
 }
 
@@ -75,7 +77,8 @@ export interface IEpisode {
 		length: number,
 		duration: number
 	}
-	platforms: object
+	platforms: object,
+	css: Array<String>
 }
 
 export interface IPodcast {

@@ -7,6 +7,7 @@ import hljs from 'highlight.js'
 import { EConf, ESourceType, IEpisode, IOther, IPage, IPost, isEpisode, ISources, isPage, isPost } from "../interfaces"
 import { conf } from '../config'
 import { replaceShortcodes } from './shortcodes'
+import { getThemePath } from './paths'
 
 marked.use({
 	pedantic: false,
@@ -30,18 +31,6 @@ marked.use({
 		}
 	}
 })
-
-function getThemePath(): string {
-	const builtInThemes = ["clean"]
-	var themeName: string | null = 'clean'
-	var themePath: string = path.join('./', 'core', 'built-in', 'themes', themeName)
-
-	themeName = conf("content.theme", "string", EConf.Optional)
-	if (themeName && themeName != "" && !builtInThemes.includes(themeName))
-		themePath = path.join('./', 'cestici', 'custom', 'themes', themeName)
-
-	return themePath
-}
 
 export function compileHTML(markdown: string, sourcePath: string, sources: ISources): Promise<string> {
 	return new Promise((resolve, reject) => {

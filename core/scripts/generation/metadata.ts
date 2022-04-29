@@ -4,10 +4,11 @@ import moment from "moment"
 import path from "path"
 import mime from "mime-types"
 import getAudioDurationInSeconds from "get-audio-duration"
+import glob from "glob"
 
 import { conf } from "../config"
 import { EConf, ESourceType, IBlog, IEpisode, IPage, IPodcast, IPost, isBlog, isEpisode, isPage, isPages, isPodcast, isPost } from "../interfaces"
-import { getGeneratedPath, getWebPath } from "./paths"
+import { getGeneratedPath, getThemePath, getWebPath } from "./paths"
 
 function getEmptyPost(sourcePath: string, blog: IBlog): IPost {
 	return {
@@ -30,6 +31,7 @@ function getEmptyPost(sourcePath: string, blog: IBlog): IPost {
 			generatedPath: "",
 			webPath: ""
 		},
+		css: new Array(),
 		content: "" // set in compilation
 	}
 }
@@ -41,6 +43,7 @@ function getEmptyPage(sourcePath: string): IPage {
 		generatedPath: getGeneratedPath(sourcePath, ESourceType.Page),
 		title: "Unnamed",
 		description: "",
+		css: new Array(),
 		content: "" // set in compilation
 	}
 }
@@ -73,7 +76,8 @@ function getEmptyEpisode(sourcePath: string, podcast: IPodcast): IEpisode {
 			length: 0,
 			duration: 0
 		},
-		platforms: {}
+		platforms: {},
+		css: new Array()
 	}
 }
 
@@ -212,6 +216,55 @@ export function getMeta(sourcePath: string, data: Array<IPage> | IBlog | IPodcas
 					}
 					else
 						console.warn(`Retrieving metadata : You didn't provide any audio for ${sourcePath.bold}`.yellow)
+				}
+				//////
+				// CSS
+				//////
+				if (fileMeta.hasOwnProperty('css')) {
+					promisesList.push(new Promise((resolve, _reject) => {
+						let cssDir = path.join(getThemePath(), 'css', 'additional')
+
+						glob(`${cssDir}/**/*.css`, (err, files) => {
+							if (err) {
+								console.error(`Retrieving metadata : Error for ${sourcePath.bold} : ${err}`.red)
+							}
+							// IF CSS IS ONLY A STRING
+							else if (typeof(fileMeta["css"]) == "string") {
+								let cssPath = path.join(cssDir, fileMeta["css"])
+								files.forEach((file) => {
+									if (file == cssPath) {
+										page.css.push(fileMeta["css"])
+										return
+									}
+								})
+								if (page.css.length == 0)
+									console.warn(`Retrieving metadata : CSS ${cssPath.bold} doesn't exist for ${sourcePath.bold}`.yellow)
+							}
+							// IF CSS IS AN ARRAY OF STRING
+							else if (Array.isArray(fileMeta["css"])) {
+								fileMeta["css"].forEach((fileCss) => {
+									if (typeof(fileCss) != "string")
+										console.warn(`Retrieving metadata : The CSS array should only contain string in ${sourcePath.bold}`.yellow)
+									else {
+										let cssPath = path.join(cssDir, fileCss)
+										let found = false
+										files.forEach((file) => {
+											if (file == cssPath) {
+												page.css.push(fileCss)
+												return found = true
+											}
+										})
+										if (!found)
+											console.warn(`Retrieving metadata : CSS ${cssPath.bold} doesn't exist for ${sourcePath.bold}`.yellow)
+									}
+								})
+							}
+							else {
+								console.warn(`Retrieving metadata : Wrong css string / array for ${sourcePath.bold}`.yellow)
+							}
+							resolve()
+						})
+					}))
 				}
 			}
 

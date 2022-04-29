@@ -1,6 +1,8 @@
 import fs from "fs"
+import path from "path"
 
-import { ESourceType } from "../interfaces"
+import { conf } from "../config"
+import { EConf, ESourceType } from "../interfaces"
 
 export function getPathsRecur(startDir: string = "cestici/source"): Array<string> {
 	let files: Array<string> = Array()
@@ -51,4 +53,16 @@ export function getWebPath(sourcePath: string, sourceType: ESourceType): string 
 			webPath = webPath.split('/').slice(0, -1).join('/')
 
 	return webPath
+}
+
+export function getThemePath(): string {
+	const builtInThemes = ["clean"]
+	var themeName: string | null = 'clean'
+	var themePath: string = path.join('./', 'core', 'built-in', 'themes', themeName)
+
+	themeName = conf("content.theme", "string", EConf.Optional)
+	if (themeName && themeName != "" && !builtInThemes.includes(themeName))
+		themePath = path.join('./', 'cestici', 'custom', 'themes', themeName)
+
+	return themePath
 }
