@@ -4,6 +4,18 @@ import fs from 'fs'
 import moment from 'moment'
 const interceptor = require("express-interceptor")
 
+import { conf } from '../config'
+import { EConf } from '../interfaces'
+
+moment.locale(conf('content.language', 'string', EConf.Required))
+
+// TODO => will be an external shortcode
+if (moment.locale() == 'fr') {
+	let mois = 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_');
+	let semaines = 'Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi_Dimanche'.split('_');
+	moment.updateLocale('fr', { months : mois, weekdays : semaines });
+}
+
 export const sendError = (code: number, res: Response) => {
 	const	codes:number[] = [404, 500]
 	const	noTemplateMessage = "Error, your theme does not provide any template for error"
@@ -70,6 +82,8 @@ export const replaceInHtml:RequestHandler = interceptor((req: Request, res:Respo
 				iso_date = iso_date.substring(1) // remove the =
 				return moment(iso_date, "YYYY-MM-DDThh:mm:ss").fromNow();
 			})
+			// DATESTRING => TODO => will be an external shortcode (temporary for cestoliv.com)
+			html = html.replace(/\w*(?<!\$)\$\{DATESTRING\}/g, moment().format('dddd D MMMM YYYY'))
 			// DOMAIN
 			html = html.replace(/\w*(?<!\$)\$\{DOMAIN\}/g, `${req.protocol}://${req.headers.host}`)
 			send(html)
