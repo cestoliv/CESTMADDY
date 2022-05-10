@@ -9,6 +9,11 @@ import { EConf } from './scripts/interfaces'
 process.title = `cmy webserver ${conf("content.title", "string", EConf.Optional)}`
 dotenv.config()
 
+if (!process.env.PORT) {
+	console.error(`Env : ${"PORT".bold} is not defined`.red)
+	process.exit(1)
+}
+
 const app = express()
 app.set('trust proxy', 1)
 app.use('/', routes)

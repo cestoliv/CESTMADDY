@@ -2,10 +2,12 @@ import express, { RequestHandler, Response, Request } from 'express'
 import path from 'path'
 import fs from 'fs'
 import moment from 'moment'
+import serveStaticCb from 'serve-static-callback'
 const interceptor = require("express-interceptor")
 
 import { conf } from '../config'
 import { EConf } from '../interfaces'
+import { matomoTrack } from './trackers/matomo'
 
 moment.locale(conf('content.language', 'string', EConf.Required))
 
@@ -36,15 +38,21 @@ export const sendError = (code: number, res: Response) => {
 }
 
 export const staticFront:RequestHandler = express.static("./cestici/generated/front", {
-	fallthrough: true
+	fallthrough: true,
 })
 
-export const staticContent:RequestHandler = express.static("./cestici/generated/content", {
-	extensions: ["html"],
-	dotfiles: "deny",
-	index: ["index.html", "post.html", "episode.html"],
-	fallthrough: true
-})
+export const staticContent:RequestHandler = serveStaticCb(
+	"./cestici/generated/content",
+	{
+		extensions: ["html"],
+		dotfiles: "deny",
+		index: ["index.html", "post.html", "episode.html"],
+		fallthrough: true
+	},
+	function (req: express.Request, _res: express.Response, path: string) {
+		if (conf("content.tracker.matomo", "object", EConf.Optional))
+			matomoTrack(req, path)
+	})
 
 export const static404:RequestHandler = (_req, res, _next) => {
     sendError(404, res)
@@ -52,22 +60,22 @@ export const static404:RequestHandler = (_req, res, _next) => {
 
 export const redirExtIndexes:RequestHandler = (req, res, next) => {
 	const	indexFiles:string[] = ["index", "post", "episode"]
-	const	reqPath: string = req.path.replace(/\/$/, "") // remove trailing slash
-	var		newPath: string = reqPath
+	var		newPath: string = req.path
 	var		filename: string
 
-	if(reqPath.endsWith('.html')) // remove .html
-		newPath = reqPath.substring(0, reqPath.length - 5)
+	if(newPath.endsWith('.html')) // remove .html
+		newPath = newPath.substring(0, newPath.length - 5)
 	filename = newPath.split("/").slice(-1)[0]
 	if(indexFiles.includes(filename)) // remove index, post, episode
-		newPath = reqPath.substring(0, newPath.length - filename.length)
-	if(newPath != reqPath)
+		newPath = newPath.substring(0, newPath.length - filename.length)
+
+	if(newPath != req.path)
 		res.redirect(newPath)
 	else
 		next()
 }
 
-export const replaceInHtml:RequestHandler = interceptor((req: Request, res:Response) => {
+export const intercept:RequestHandler = interceptor((req: Request, res:Response) => {
 	return {
 		isInterceptable: () => { // only with HTML / XML
 			if (/text\/html/.test(res.get('Content-Type')) ||
