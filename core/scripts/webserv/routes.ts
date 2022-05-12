@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import { staticFront, staticContent, static404, redirExtIndexes, intercept } from './controllers'
 
-const router = Router({ strict: true })
+const router = Router()
 
 router.use("/front", staticFront)
 router.use(redirExtIndexes)
