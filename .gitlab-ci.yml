@@ -13,6 +13,7 @@ docker-publish:
   only:
     - main
     - v2
+    - v2-stabler
   retry: 2
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
