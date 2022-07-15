@@ -147,3 +147,11 @@ export enum EConf {
 	Required,
 	Optional
 }
+
+//#region Hot/Short codes
+export interface HotData {
+	domain: string,
+	path: string,
+	store_path: string
+}
+//#endregion

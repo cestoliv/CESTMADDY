@@ -20,19 +20,20 @@ function compileShortcode(obj: any, sourcePath: string, sources: ISources): Prom
 	return new Promise((resolve, _reject) => {
 		var scPath: string
 
-		if (!obj.hasOwnProperty('sc'))
+		if (!obj.hasOwnProperty('short'))
 		{
-			console.error(`Compiling : You do not specify a sc property in a shortcode in ${sourcePath.bold}.`.red)
+			if (!obj.hasOwnProperty('hot'))
+				console.error(`Compiling : You do not specify a short or hot property in a {short, hot}code in ${sourcePath.bold}.`.red)
 			return resolve("")
 		}
 
 		// Search in built-in Shortcodes
-		scPath = path.join('../../', 'built-in', 'shortcodes', obj['sc'].replace(/\./g, '/'))
+		scPath = path.join('../../', 'built-in', 'shortcodes', obj['short'].replace(/\./g, '/'))
 		getShortcodeReturn(obj, sourcePath, sources, scPath).then((result) => {
 			resolve(result)
 		}).catch((_err) => {
 			// Search in custom Shortcodes
-			scPath = path.join('../../../', 'cestici', 'custom', 'shortcodes', obj['sc'].replace(/\./g, '/'))
+			scPath = path.join('../../../', 'cestici', 'custom', 'shortcodes', obj['short'].replace(/\./g, '/'))
 			getShortcodeReturn(obj, sourcePath, sources, scPath).then((result) => {
 				resolve(result)
 			}).catch((_err) => {
@@ -40,30 +41,6 @@ function compileShortcode(obj: any, sourcePath: string, sources: ISources): Prom
 				resolve("")
 			})
 		})
-		/*
-		import(scPath).then((sc) => [
-			sc.compile(obj, sources).then((result: string) => {
-				resolve(result)
-			}).catch((err: string) => {
-				console.error(`Compiling : Shortcode ${obj['sc']} in ${sourcePath.bold} returned an error : ${err}.`.red)
-				resolve("")
-			})
-		]).catch(() => {
-			// Search in custom Shortcodes
-			scPath = path.join('cestici', 'custom', 'shortcodes', obj['sc'].replace(/\./g, '/'))
-			import(scPath).then((sc) => [
-				sc.compile(obj, sources).then((result: string) => {
-					resolve(result)
-				}).catch((err: string) => {
-					console.error(`Compiling : Shortcode ${obj['sc']} in ${sourcePath.bold} returned an error : ${err}.`.red)
-					resolve("")
-				})
-			]).catch(() => {
-				console.error(`Compiling : The specified sc property in ${sourcePath.bold} does not match any shortcode.`.red)
-				resolve("")
-			})
-		})
-		*/
 	})
 }
 
@@ -78,7 +55,6 @@ export function replaceShortcodes(markdown: string, sourcePath: string, sources:
 
 		var foundObj: object
 		try {
-
 			foundObj = JSON.parse(found[0].substring(1))
 			compileShortcode(foundObj, sourcePath, sources).then((compiledSc) => {
 				markdown = markdown.substring(0, startIndex + found!.index)

@@ -8,6 +8,7 @@ import { EConf, ISources } from '../interfaces'
 import { createFavicons } from './favicon'
 import { createFeeds } from './feed'
 import { conf } from '../config'
+import { runHotCrons } from './hotcodes'
 
 function compileSources(sources: ISources): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -67,7 +68,8 @@ function compileSources(sources: ISources): Promise<void> {
 				compileSources(sources),
 				compileErrors(),
 				copyTheme(),
-				createFavicons()
+				createFavicons(),
+				runHotCrons()
 			]).then(() => {
 				createFeeds(sources).then(() => {
 					console.log('COMPILED'.green.bold)

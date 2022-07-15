@@ -9,19 +9,26 @@ import { EConf } from "../../interfaces"
 
 dotenv.config()
 
-var siteId = conf("content.tracker.matomo.id", "number", EConf.Required)
-var instanceUrl = conf("content.tracker.matomo.instance", "string", EConf.Required)
-var authToken = process.env.MATOMO_TOKEN
-if (!authToken) {
-	console.error(`Env : ${"MATOMO_TOKEN".bold} is not defined`.red)
-	process.exit(1)
+
+var authToken: string
+var matomo: any
+
+export function matomoInit(): void {
+	let siteId = conf("content.tracker.matomo.id", "number", EConf.Required)
+	let instanceUrl = conf("content.tracker.matomo.instance", "string", EConf.Required)
+
+	authToken = process.env.MATOMO_TOKEN ? process.env.MATOMO_TOKEN: ""
+	if (authToken == "") {
+		console.error(`Env : ${"MATOMO_TOKEN".bold} is not defined`.red)
+		process.exit(1)
+	}
+
+	matomo = new MatomoTracker(siteId, instanceUrl)
+
+	matomo.on('error', function(err: any) {
+		console.warn(`Matomo error: ${err}`)
+	})
 }
-
-var matomo = new MatomoTracker(siteId, instanceUrl)
-
-matomo.on('error', function(err: any) {
-	console.warn(`Matomo error: ${err}`)
-})
 
 export function matomoTrack(req: Request, path: string): void {
 	if (mime.lookup(path) == "text/html") {
@@ -34,6 +41,5 @@ export function matomoTrack(req: Request, path: string): void {
 			urlref: req.get("Referer")
 
 		})
-		console.log(req.url)
 	}
 }

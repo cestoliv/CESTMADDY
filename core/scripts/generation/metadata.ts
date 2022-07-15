@@ -20,7 +20,7 @@ function getEmptyPost(sourcePath: string, blog: IBlog): IPost {
 		date: {
 			object: new Date(),
 			localeString: new Date().toLocaleString(conf(`content.language`, "string", EConf.Required)),
-			relativeString: `\${RELATIVE_DATE=${new Date().toISOString()}}`
+			relativeString: `\${"hot": "relative_date", "date": "${new Date().toISOString()}"}`
 		},
 		author: {
 			name: conf(`content.blogs.${blog.name}.main_author`, "string", EConf.Required),
@@ -58,7 +58,7 @@ function getEmptyEpisode(sourcePath: string, podcast: IPodcast): IEpisode {
 		date: {
 			object: new Date(),
 			localeString: new Date().toLocaleString(conf(`content.language`, "string", EConf.Required)),
-			relativeString: `\${RELATIVE_DATE=${new Date().toISOString()}}`
+			relativeString: `\${"hot": "relative_date", "date": "${new Date().toISOString()}"}`
 		},
 		author: {
 			name: conf(`content.podcasts.${podcast.name}.main_author`, "string", EConf.Required),
@@ -125,7 +125,7 @@ export function getMeta(sourcePath: string, data: Array<IPage> | IBlog | IPodcas
 						if (moment(fileMeta.date, "YYYY-MM-DDThh:mm:ss", true).isValid()) {
 							page.date.object = moment(fileMeta.date, "YYYY-MM-DDThh:mm:ss").toDate()
 							page.date.localeString = page.date.object.toLocaleString(conf(`content.language`, "string", EConf.Required))
-							page.date.relativeString = `\${RELATIVE_DATE=${page.date.object.toISOString()}}`
+							page.date.relativeString = `\${"hot": "relative_date", "date": "${page.date.object.toISOString()}"}`
 						}
 						else
 							console.warn(`Retrieving metadata : Wrong date format (${"YYYY-MM-DDThh:mm:ss".bold}) for ${sourcePath.bold}`.yellow)

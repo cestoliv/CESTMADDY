@@ -1,26 +1,7 @@
-import fs from "fs"
 import path from "path"
 
 import { conf } from "../config"
 import { EConf, ESourceType } from "../interfaces"
-
-export function getPathsRecur(startDir: string = "cestici/source"): Array<string> {
-	let files: Array<string> = Array()
-
-	let dirFiles: Array<string> = fs.readdirSync(startDir) || Array()
-
-	dirFiles.forEach((dirFile) => {
-		if (fs.statSync(`${startDir}/${dirFile}`).isDirectory()) {
-			getPathsRecur(`${startDir}/${dirFile}`).forEach((childFile) => {
-				files.push(childFile)
-			})
-		}
-		else
-			files.push(`${startDir}/${dirFile}`)
-	})
-
-	return files
-}
 
 export function getGeneratedPath(sourcePath: string, sourceType: ESourceType): string {
 	let generatedPath: string

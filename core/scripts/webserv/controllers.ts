@@ -6,17 +6,14 @@ import serveStaticCb from 'serve-static-callback'
 const interceptor = require("express-interceptor")
 
 import { conf } from '../config'
-import { EConf } from '../interfaces'
-import { matomoTrack } from './trackers/matomo'
+import { EConf, HotData } from '../interfaces'
+import { matomoInit, matomoTrack } from './trackers/matomo'
+import { replaceHotcodes } from '../generation/hotcodes'
 
 moment.locale(conf('content.language', 'string', EConf.Required))
 
-// TODO => will be an external shortcode
-if (moment.locale() == 'fr') {
-	let mois = 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_');
-	let semaines = 'Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi_Dimanche'.split('_');
-	moment.updateLocale('fr', { months : mois, weekdays : semaines });
-}
+if (conf("content.tracker.matomo", "object", EConf.Optional))
+	matomoInit()
 
 export const sendError = (code: number, res: Response) => {
 	const	codes:number[] = [404, 500]
@@ -85,16 +82,17 @@ export const intercept:RequestHandler = interceptor((req: Request, res:Response)
 			return false
 		},
 		intercept: (html: string, send: (arg0: string) => void) => {
-			// RELATIVE DATE
-			html = html.replace(/\w*(?<!\$)\$\{RELATIVE_DATE([\s\S]*?)\}/g, (_: string, iso_date: string) => {
-				iso_date = iso_date.substring(1) // remove the =
-				return moment(iso_date, "YYYY-MM-DDThh:mm:ss").fromNow();
+			let hotData: HotData = {
+				domain: `${req.protocol}://${req.headers.host}`,
+				path: req.url,
+				store_path: ""
+			}
+			replaceHotcodes(html, hotData, 0).then(replacedHtml => {
+				send(replacedHtml)
+			}).catch(err => {
+				console.error(`Serving : Hotcode ${err}`.red)
+				send(html)
 			})
-			// DATESTRING => TODO => will be an external shortcode (temporary for cestoliv.com)
-			html = html.replace(/\w*(?<!\$)\$\{DATESTRING\}/g, moment().format('dddd D MMMM YYYY'))
-			// DOMAIN
-			html = html.replace(/\w*(?<!\$)\$\{DOMAIN\}/g, `${req.protocol}://${req.headers.host}`)
-			send(html)
 		}
 	}
 })
