@@ -81,8 +81,8 @@ export const redirExtIndexes:RequestHandler = (req, res, next) => {
 export const intercept:RequestHandler = interceptor((req: Request, res:Response) => {
 	return {
 		isInterceptable: () => { // only with HTML / XML
-			if (/text\/html/.test(res.get('Content-Type')) ||
-				/application\/xml/.test(res.get('Content-Type'))
+			if (/text\/html/.test(res.get('Content-Type') || "") ||
+				/application\/xml/.test(res.get('Content-Type') || "")
 			)
 				return true
 			return false
