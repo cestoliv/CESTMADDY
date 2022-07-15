@@ -7,9 +7,12 @@ const interceptor = require("express-interceptor")
 
 import { conf } from '../config'
 import { EConf } from '../interfaces'
-import { matomoTrack } from './trackers/matomo'
+import { matomoInit, matomoTrack } from './trackers/matomo'
 
 moment.locale(conf('content.language', 'string', EConf.Required))
+
+if (conf("content.tracker.matomo", "object", EConf.Optional))
+	matomoInit()
 
 // TODO => will be an external shortcode
 if (moment.locale() == 'fr') {
