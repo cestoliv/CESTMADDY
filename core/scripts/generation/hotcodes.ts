@@ -1,20 +1,5 @@
-import { glob } from "glob"
 import path from "path"
 import { HotData } from "../interfaces"
-
-export function runHotCrons(): Promise<void> {
-	return new Promise((resolve, reject) => {
-		glob('{dist/core/built-in,dist/cestici/custom}/hotcodes/**/*.js', (err, files) => {
-			if (err) {
-				console.log(err)
-				return reject()
-			}
-
-			console.log(__dirname)
-			console.log(files)
-		})
-	})
-}
 
 function getHotcodeReturn(hcPath: string, hotSettings: any, hotData: HotData): Promise<string> {
 	return new Promise((resolve, reject) => {
@@ -68,28 +53,30 @@ export function replaceHotcodes(markdown: string, hotData: HotData, startIndex: 
 		if (!found)
 			return resolve(markdown)
 
-			var foundObj: object
-			try {
-				foundObj = JSON.parse(found[0].substring(1))
-				compileHotcode(foundObj, hotData).then((compiledHc) => {
-					markdown = markdown.substring(0, startIndex + found!.index)
-						+ compiledHc
-						+ markdown.substring(startIndex + found!.index + found![0].length)
+		var foundObj: object
+		try {
+			let foundContent = found[0].substring(1)
+			foundContent = foundContent.replace(new RegExp('&quot;', 'g'), '"')
+			foundObj = JSON.parse(foundContent)
+			compileHotcode(foundObj, hotData).then((compiledHc) => {
+				markdown = markdown.substring(0, startIndex + found!.index)
+					+ compiledHc
+					+ markdown.substring(startIndex + found!.index + found![0].length)
 
-					replaceHotcodes(markdown, hotData,
-						startIndex + found!.index + compiledHc.length)
-					.then((markdown) => {
-						resolve(markdown)
-					})
-				})
-			}
-			catch (_e) {
-				console.error(`Serving : A hotcode is badly formatted in ${hotData.path.bold} (the syntax is that of json)`.red)
 				replaceHotcodes(markdown, hotData,
-					startIndex + found!.index + found![0].length
-				).then((markdown) => {
+					startIndex + found!.index + compiledHc.length)
+				.then((markdown) => {
 					resolve(markdown)
 				})
-			}
+			})
+		}
+		catch (_e) {
+			console.error(`Serving : A hotcode is badly formatted in ${hotData.path.bold} (the syntax is that of json)`.red)
+			replaceHotcodes(markdown, hotData,
+				startIndex + found!.index + found![0].length
+			).then((markdown) => {
+				resolve(markdown)
+			})
+		}
 	})
 }

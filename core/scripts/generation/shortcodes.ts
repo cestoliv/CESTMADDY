@@ -7,7 +7,7 @@ function getShortcodeReturn(obj: any, sourcePath: string, sources: ISources, scP
 			sc.compile(obj, sources).then((result: string) => {
 				resolve(result)
 			}).catch((err: string) => {
-				console.error(`Compiling : Shortcode ${obj['sc']} in ${sourcePath.bold} returned an error : ${err}.`.red)
+				console.error(`Compiling : Shortcode ${obj['short']} in ${sourcePath.bold} returned an error : ${err}.`.red)
 				resolve("")
 			})
 		]).catch((err) => {
@@ -22,9 +22,12 @@ function compileShortcode(obj: any, sourcePath: string, sources: ISources): Prom
 
 		if (!obj.hasOwnProperty('short'))
 		{
-			if (!obj.hasOwnProperty('hot'))
+			if (!obj.hasOwnProperty('hot')) {
 				console.error(`Compiling : You do not specify a short or hot property in a {short, hot}code in ${sourcePath.bold}.`.red)
-			return resolve("")
+				return resolve("")
+			}
+			else
+				return resolve(`$${JSON.stringify(obj)}`)
 		}
 
 		// Search in built-in Shortcodes

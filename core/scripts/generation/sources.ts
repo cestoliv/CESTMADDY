@@ -98,7 +98,7 @@ export function getSources(): Promise<ISources> {
 
 		glob("cestici/source/**", {nodir: true}, function (err, files) {
 			if (err) {
-				console.log(err)
+				console.error(err)
 				return reject()
 			}
 
@@ -147,7 +147,7 @@ export function getSources(): Promise<ISources> {
 						sources.footer = footer[1]
 						resolve(sources)
 					}).catch((err) => {
-						console.log(err)
+						console.error(err)
 						reject()
 					})
 				}

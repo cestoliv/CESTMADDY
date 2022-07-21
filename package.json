@@ -8,10 +8,11 @@
 	"license": "MIT",
 	"scripts": {
 		"compile": "node dist/core/scripts/generation/build.js",
+		"compile:dev": "npm run compile; while inotifywait -r cestici/source -e create,delete,modify; do { npm run compile; }; done",
 		"start": "node dist/core/server.js",
-		"start-dev": "nodemon dist/core/server.js",
+		"start:dev": "nodemon dist/core/server.js",
 		"build": "tsc",
-		"build-dev": "tsc -w"
+		"build:dev": "tsc -w"
 	},
 	"dependencies": {
 		"@colors/colors": "^1.4.0",
